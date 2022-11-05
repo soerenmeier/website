@@ -1,0 +1,117 @@
+:root {
+	--brown: #3d2621;
+	--dark-brown: #2e2321;
+}
+
+* {
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	position: absolute;
+	display: flex;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	align-items: center;
+	justify-content: center;
+	font-family: 'Volkorn', serif;
+	background-image: url('./bg-image.jpg');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+	background-position: center;
+}
+
+h1 {
+	font-size: 60px;
+	font-weight: 700;
+	color: var(--brown);
+	text-shadow: 1px 1px 0 #fff;
+	transform: rotate(-30deg);
+	animation-name: rotatingText;
+	animation-duration: 1.5s;
+	/*animation-direction: alternate;*/
+	animation-iteration-count: infinite;
+	animation-timing-function: step-end;
+	text-align: center;
+}
+
+@keyframes rotatingText {
+	0% {
+		transform: rotate(-30deg);
+	}
+
+	50% {
+		transform: rotate(30deg);
+	}
+}
+
+footer {
+	position: absolute;
+	display: flex;
+	bottom: 20px;
+	width: 100%;
+	justify-content: center;
+	gap: 10px;
+}
+
+footer a {
+	text-decoration: none;
+	font-size: 18px;
+	color: var(--dark-brown);
+	transition: color 0.2s ease;
+	text-shadow: 1px 1px 2px rgba(0,0,0,.2);
+	transform: rotate(0);
+}
+
+footer a:hover {
+	background-color: var(--dark-brown);
+	color: transparent;
+	text-shadow: none;
+	animation: aHover;
+	animation-duration: 0.3s;
+	animation-timing-function: step-end;
+	animation-fill-mode: forwards;
+}
+
+@keyframes aHover {
+	0% {
+		transform: translateY(0);
+	}
+
+	50% {
+		transform: translateY(2px);
+	}
+
+	100% {
+		transform: translateY(2px);
+	}
+}
+
+@media (max-width: 1000px) {
+	h1 {
+		font-size: 40px;
+	}
+
+	footer {
+		bottom: 15px;
+	}
+
+	footer a {
+		font-size: 15px;
+	}
+}
+
+@media (max-width: 700px) {
+	h1 {
+		font-size: 30px;
+	}
+}
