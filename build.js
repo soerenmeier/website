@@ -23,8 +23,10 @@ async function main() {
 	const router = new Router(__dirname);
 	await router.load(false);
 	try {
-		fs.mkdirSync(path.resolve(__dirname + '/src') + '/gen');
-	} catch (e) {}
+		await fs.mkdir(path.resolve(__dirname + '/src') + '/gen');
+	} catch (e) {
+		console.log('could not create gen folder', e);
+	}
 	await router.generateRoutes();
 
 	// build client
