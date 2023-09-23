@@ -1,27 +1,37 @@
 import App from './app.svelte';
-import pages, { setCurrentPage, setPageContext } from './lib/pages.js';
+import Router from 'fire-svelte/routing/router.js';
+import SsrCache from 'fire-svelte/ssr/cache.js';
+import * as routes from './pages/routes.js';
+import { handleRoute } from './main.js';
 
 async function main() {
-	const ctx = window.PAGE_CONTEXT;
-	setPageContext(ctx);
+	const cache = new SsrCache;
+	const router = new Router;
 
-	const page = pages.bySlug(ctx.pageSlug);
-	if (!page) {
-		alert('404');
-		return;
-	}
-	setCurrentPage(page);
+	const context = new Map;
+	context.set('router', router);
 
-	const svelteComp = await page.load();
+	routes.register(router);
 
-	const props = {};
+	let app;
 
-	const app = new App({
-		target: document.body,
-		hydrate: true,
-		props: {
-			page: { comp: svelteComp, props }
+	router.onRequest(async req => {
+		const route = router.route(req);
+
+		const { props } = await handleRoute(route);
+
+		if (!app) {
+			app = new App({
+				target: document.body,
+				props,
+				hydrate: true,
+				context
+			});
+		} else {
+			app.$set(props);
 		}
 	});
+
+	router.initClient();
 }
 main();

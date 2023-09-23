@@ -11,7 +11,9 @@
 </header>
 
 <main>
-	<svelte:component this={page.comp} {...page.props} />
+	{#key page}
+		<svelte:component this={page.component} {...page.props} />
+	{/key}
 </main>
 
 

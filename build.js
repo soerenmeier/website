@@ -1,112 +1,90 @@
 import fs from 'fs/promises';
 import command from 'node:child_process';
 import util from 'node:util';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import Router from './src/lib/router.js';
+import Router from 'fire-svelte/routing/router.js';
+// import * as routes from './src/routes/routes.js';
 
 const exec = util.promisify(command.exec);
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-let pagesToExport, renderPage, getIndexPage;
-
-
-async function createPage(index, page, path, depth) {
-	const html = await renderPage(page, depth, index);
-
-	await fs.writeFile(path, html);
-}
 
 async function main() {
-	console.info('creating routes');
-	// create routes
-	const router = new Router(__dirname);
-	await router.load(false);
-	try {
-		await fs.mkdir(path.resolve(__dirname + '/src') + '/gen');
-	} catch (e) {
-		console.log('could not create gen folder', e);
-	}
-	await router.generateRoutes();
-
-	// build client
 	console.info('build client');
-	await exec('npx vite build --outDir dist-client');
+	await exec('npx vite build --outDir dist-client --ssrManifest');
 
-	// build server
 	console.info('build server');
 	await exec('npx vite build --outDir dist-server --ssr src/server.js');
 
-
-	const server = await import('./dist-server/server.js');
-	pagesToExport = server.pagesToExport;
-	renderPage = server.renderPage;
-	getIndexPage = server.indexPage;
-
-	// create folders
-	console.info('create pages');
-	try {
-		await fs.rm('dist-pages', { force: true, recursive: true });
-	} catch (e) {}
-
-	await fs.mkdir('dist-pages');
-
-	const indexFile = await fs.readFile(
-		'dist-client/src/index.html',
-		{ encoding: 'utf8' }
-	);
-
-	const indexPage = getIndexPage();
-
-	await createPage(
-		indexFile,
-		indexPage,
-		'dist-pages/index.html',
-		0
-	);
-
-	for (const page of pagesToExport()) {
-		await createPage(
-			indexFile,
-			page,
-			`dist-pages/${page.slug}.html`,
-			0
-		);
-	}
-
-	// create final package
-	console.info('create package');
+	console.info('create dist');
 	try {
 		await fs.rm('dist', { force: true, recursive: true });
 	} catch (e) {}
-	await fs.mkdir('dist');
 
-	// copy all pages
 	await fs.cp(
-		'dist-pages',
-		'dist',
+		'dist-client/',
+		'dist/',
 		{ recursive: true }
 	);
+	await fs.rm('dist/index.html');
+	await fs.rm('dist/ssr-manifest.json');
 
-	// now copy assets
-	await fs.cp(
-		'dist-client/assets',
-		'dist/assets',
-		{ recursive: true }
+	// try {
+	// 	await fs.rm('dist-client', { force: true, recursive: true });
+	// } catch (e) {}
+	// try {
+	// 	await fs.rm('dist-server', { force: true, recursive: true });
+	// } catch (e) {}
+
+	const indexHtml = await fs.readFile(
+		'dist-client/index.html',
+		{ encoding: 'utf8' }
 	);
+	const ssrManifest = JSON.parse(await fs.readFile(
+		'dist-client/ssr-manifest.json',
+		{ encoding: 'utf8' }
+	));
 
-	console.info('cleanup');
+	const server = await import('./dist-server/server.js');
+
+	const router = new Router;
+	server.routes.register(router);
+
+	for (const route of router.routes) {
+		const dir = route.uri;
+		if (typeof dir !== 'string')
+			throw new Error('only string uri\'s are supported');
+
+		const { status, fields } = await server.render({
+			method: 'GET',
+			uri: route.uri,
+			ssrManifest
+		});
+
+		if (status != '200')
+			throw new Error('expected 200 status');
+
+		try {
+			await fs.mkdir('dist' + dir);
+		} catch (e) {
+			console.log('could not create dir', 'dist' + dir);
+		}
+
+		let html = indexHtml;
+		for (const field in fields) {
+			html = html.replace(`<!--ssr-${field}-->`, fields[field]);
+		}
+
+		const path = 'dist' + dir + '/index.html';
+		console.log('create file', path);
+		await fs.writeFile(path, html);
+	}
+
 	try {
 		await fs.rm('dist-client', { force: true, recursive: true });
-	} catch (e) {}
-	try {
-		await fs.rm('dist-pages', { force: true, recursive: true });
 	} catch (e) {}
 	try {
 		await fs.rm('dist-server', { force: true, recursive: true });
 	} catch (e) {}
 
-	console.info('\n\nfind your files in `dist`');
+	console.log('ready in dist');
 }
-
 main();

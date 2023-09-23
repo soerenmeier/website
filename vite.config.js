@@ -1,33 +1,18 @@
-import { resolve } from 'path';
+import { resolve, relative } from 'path';
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import replace from '@rollup/plugin-replace';
+import { usedSsrComponents } from 'fire-svelte/ssr/components.js';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ outDir, mode, ssrBuild }) => {
 	return {
-		publicDir: ssrBuild ? false : 'public',
-		base: '',
-		build: {
-			rollupOptions: {
-				input: {
-					main: resolve(__dirname, 'src/index.html')
-				}
-			}
-		},
-		ssr: {
-			noExternal: 'fire'
-		},
 		plugins: [
 			svelte({
 				compilerOptions: {
 					hydratable: true
 				}
 			}),
-			replace({
-				preventAssignment: true,
-				'process.env.DEBUG': mode !== 'production'
-			})
+			usedSsrComponents(f => relative(__dirname, f))
 		],
 		resolve: {
 			alias: [
