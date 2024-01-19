@@ -6,9 +6,9 @@
 	export let page;
 </script>
 
-<header>
+<!-- <header>
 	<Navigation />
-</header>
+</header> -->
 
 <main>
 	{#key page}
@@ -17,6 +17,6 @@
 </main>
 
 
-<footer>
+<!-- <footer>
 	<Footer />
-</footer>
+</footer> -->

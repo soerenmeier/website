@@ -33,7 +33,8 @@ async function createDevServer() {
 
 			const { status, fields } = await render({
 				method: 'GET',
-				uri: url
+				uri: url,
+				headers: req.headers
 			});
 
 			let html = template;

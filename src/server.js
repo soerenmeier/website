@@ -8,13 +8,13 @@ import { handleRoute } from './main.js';
 
 // opt: { method, uri, ?ssrManifest }
 // returns: { status, body, head }
-export async function render(opt) {
+export async function render(req, opt) {
 	const cache = new SsrCache;
 	const router = new Router;
 
 	routes.register(router);
 
-	const req = new Request(opt.uri);
+	req = router.initServer('http://' + req.headers.host + req.uri);
 
 	const route = router.route(req);
 	const { status, props } = await handleRoute(route);

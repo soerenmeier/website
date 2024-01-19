@@ -1,6 +1,6 @@
 :root {
-	--brown: #3d2621;
-	--dark-brown: #2e2321;
+	/*--brown: #3d2621;
+	--dark-brown: #2e2321;*/
 }
 
 * {
@@ -13,105 +13,95 @@
 }
 
 body {
-	position: absolute;
-	display: flex;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
-	align-items: center;
-	justify-content: center;
-	font-family: 'Volkorn', serif;
-	background-image: url('/assets/bg-image.jpg');
-	background-repeat: no-repeat;
-	background-attachment: fixed;
-	background-size: cover;
-	background-position: center;
+	font-family: 'silka', serif;
 }
 
-h1 {
-	font-size: 60px;
+@font-face {
+	font-family: 'silka';
+	src: url('/fonts/silka-thin-webfont.eot');
+	src: url('/fonts/silka-thin-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/silka-thin-webfont.woff2') format('woff2'),
+		 url('/fonts/silka-thin-webfont.woff') format('woff'),
+		 url('/fonts/silka-thin-webfont.ttf') format('truetype');
+	font-weight: 100;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'silka';
+	src: url('/fonts/silka-extralight-webfont.eot');
+	src: url('/fonts/silka-extralight-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/silka-extralight-webfont.woff2') format('woff2'),
+		 url('/fonts/silka-extralight-webfont.woff') format('woff'),
+		 url('/fonts/silka-extralight-webfont.ttf') format('truetype');
+	font-weight: 200;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'silka';
+	src: url('/fonts/silka-light-webfont.eot');
+	src: url('/fonts/silka-light-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/silka-light-webfont.woff2') format('woff2'),
+		 url('/fonts/silka-light-webfont.woff') format('woff'),
+		 url('/fonts/silka-light-webfont.ttf') format('truetype');
+	font-weight: 300;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'silka';
+	src: url('/fonts/silka-regular-webfont.eot');
+	src: url('/fonts/silka-regular-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/silka-regular-webfont.woff2') format('woff2'),
+		 url('/fonts/silka-regular-webfont.woff') format('woff'),
+		 url('/fonts/silka-regular-webfont.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'silka';
+	src: url('/fonts/silka-medium-webfont.eot');
+	src: url('/fonts/silka-medium-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/silka-medium-webfont.woff2') format('woff2'),
+		 url('/fonts/silka-medium-webfont.woff') format('woff'),
+		 url('/fonts/silka-medium-webfont.ttf') format('truetype');
+	font-weight: 500;
+	font-style: normal;
+
+}
+
+@font-face {
+	font-family: 'silka';
+	src: url('/fonts/silka-semibold-webfont.eot');
+	src: url('/fonts/silka-semibold-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/silka-semibold-webfont.woff2') format('woff2'),
+		 url('/fonts/silka-semibold-webfont.woff') format('woff'),
+		 url('/fonts/silka-semibold-webfont.ttf') format('truetype');
+	font-weight: 600;
+	font-style: normal;
+}
+
+
+@font-face {
+	font-family: 'silka';
+	src: url('/fonts/silka-bold-webfont.eot');
+	src: url('/fonts/silka-bold-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/silka-bold-webfont.woff2') format('woff2'),
+		 url('/fonts/silka-bold-webfont.woff') format('woff'),
+		 url('/fonts/silka-bold-webfont.ttf') format('truetype');
 	font-weight: 700;
-	color: var(--brown);
-	text-shadow: 1px 1px 0 #fff;
-	transform: rotate(-30deg);
-	animation-name: rotatingText;
-	animation-duration: 1.5s;
-	/*animation-direction: alternate;*/
-	animation-iteration-count: infinite;
-	animation-timing-function: step-end;
-	text-align: center;
+	font-style: normal;
 }
 
-@keyframes rotatingText {
-	0% {
-		transform: rotate(-30deg);
-	}
-
-	50% {
-		transform: rotate(30deg);
-	}
-}
-
-footer {
-	position: absolute;
-	display: flex;
-	bottom: 20px;
-	width: 100%;
-	justify-content: center;
-	gap: 10px;
-}
-
-footer a {
-	text-decoration: none;
-	font-size: 18px;
-	color: var(--dark-brown);
-	transition: color 0.2s ease;
-	text-shadow: 1px 1px 2px rgba(0,0,0,.2);
-	transform: rotate(0);
-}
-
-footer a:hover {
-	background-color: var(--dark-brown);
-	color: transparent;
-	text-shadow: none;
-	animation: aHover;
-	animation-duration: 0.3s;
-	animation-timing-function: step-end;
-	animation-fill-mode: forwards;
-}
-
-@keyframes aHover {
-	0% {
-		transform: translateY(0);
-	}
-
-	50% {
-		transform: translateY(2px);
-	}
-
-	100% {
-		transform: translateY(2px);
-	}
-}
-
-@media (max-width: 1000px) {
-	h1 {
-		font-size: 40px;
-	}
-
-	footer {
-		bottom: 15px;
-	}
-
-	footer a {
-		font-size: 15px;
-	}
-}
-
-@media (max-width: 700px) {
-	h1 {
-		font-size: 30px;
-	}
+@font-face {
+	font-family: 'silka';
+	src: url('/fonts/silka-black-webfont.eot');
+	src: url('/fonts/silka-black-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('/fonts/silka-black-webfont.woff2') format('woff2'),
+		 url('/fonts/silka-black-webfont.woff') format('woff'),
+		 url('/fonts/silka-black-webfont.ttf') format('truetype');
+	font-weight: 900;
+	font-style: normal;
 }

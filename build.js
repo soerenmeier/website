@@ -25,21 +25,16 @@ async function main() {
 		{ recursive: true }
 	);
 	await fs.rm('dist/index.html');
-	await fs.rm('dist/ssr-manifest.json');
-
-	// try {
-	// 	await fs.rm('dist-client', { force: true, recursive: true });
-	// } catch (e) {}
-	// try {
-	// 	await fs.rm('dist-server', { force: true, recursive: true });
-	// } catch (e) {}
+	try {
+		await fs.rm('dist/.vite', { force: true, recursive: true });
+	} catch (e) {}
 
 	const indexHtml = await fs.readFile(
 		'dist-client/index.html',
 		{ encoding: 'utf8' }
 	);
 	const ssrManifest = JSON.parse(await fs.readFile(
-		'dist-client/ssr-manifest.json',
+		'dist-client/.vite/ssr-manifest.json',
 		{ encoding: 'utf8' }
 	));
 
@@ -56,7 +51,10 @@ async function main() {
 		const { status, fields } = await server.render({
 			method: 'GET',
 			uri: route.uri,
-			ssrManifest
+			ssrManifest,
+			headers: {
+				host: 'localhost'
+			}
 		});
 
 		if (status != '200')

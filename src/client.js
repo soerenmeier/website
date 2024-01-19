@@ -15,10 +15,11 @@ async function main() {
 
 	let app;
 
-	router.onRequest(async req => {
-		const route = router.route(req);
-
+	router.onRoute(async (req, route, routing) => {
 		const { props } = await handleRoute(route);
+
+		if (await routing.dataReady())
+			return;
 
 		if (!app) {
 			app = new App({
@@ -30,6 +31,8 @@ async function main() {
 		} else {
 			app.$set(props);
 		}
+
+		routing.domReady();
 	});
 
 	router.initClient();
