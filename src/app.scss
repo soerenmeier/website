@@ -1,0 +1,35 @@
+@import './css/typo.scss';
+
+:root {
+	/*--brown: #3d2621;
+	--dark-brown: #2e2321;*/
+	--bg-dark-400: hsl(212, 8%, 7%);
+}
+
+* {
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	font-family: 'silka', serif;
+	font-size: 16px;
+	line-height: 1.5;
+}
+
+.ctn-cont {
+	width: 100%;
+	max-width: 1136px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 2rem;
+	padding-right: 2rem;
+}
+
+.rt {
+	max-width: 700px;
+}

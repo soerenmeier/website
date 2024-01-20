@@ -1,6 +1,6 @@
 import { resolve, relative } from 'path';
 import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { usedSsrComponents } from 'fire-svelte/ssr/components.js';
 
 // https://vitejs.dev/config/
@@ -10,7 +10,8 @@ export default defineConfig(({ outDir, mode, ssrBuild }) => {
 			svelte({
 				compilerOptions: {
 					hydratable: true
-				}
+				},
+				preprocess: [vitePreprocess()]
 			}),
 			usedSsrComponents(f => relative(__dirname, f))
 		],
