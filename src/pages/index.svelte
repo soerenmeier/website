@@ -1,189 +1,133 @@
 <script>
-	import { onMount } from 'svelte';
-	import { timeline, stagger } from 'chnobli';
-	import { quadOut } from 'chnobli/easing';
-	import { from, words, chars } from 'chnobli/utils';
-	import IntroBg from './index/introbg.svelte';
+	import Intro from './index/intro.svelte';
 
-	let ctnCont;
-
-	onMount(() => {
-		const h1 = ctnCont.children[0];
-		const role = ctnCont.children[1];
-		const text = ctnCont.children[2];
-		const cta = ctnCont.children[3];
-
-		timeline()
-			// h1
-			.add(h1.children[0], { opacity: 1 })
-			.nest(tl => {
-				tl.set(h1.children[1], { opacity: 1 })
-				.add(chars(h1.children[1]), {
-					opacity: 1,
-					duration: 800
-				}, stagger(p => p * 110))
-				.add(chars(h1.children[1]), {
-					y: from(-5),
-					ease: quadOut,
-					duration: 400
-				}, stagger(p => p * 110))
-			}, {}, 400)
-			// role
-			.set(role, { opacity: 1 }, '-=200')
-			.add(chars(role), {
-				opacity: 1,
-				duration: 800
-			}, stagger(p => '+=' + p * 20))
-			// text
-			.nest(tl => {
-				tl.set(text, { opacity: 1 })
-				.add(words(text), {
-					y: from(5),
-					ease: quadOut,
-					duration: 600
-				}, stagger(p => p * 150))
-				.add(words(text), {
-					opacity: 1,
-					duration: 800
-				}, stagger(p => p * 150))
-			}, {}, '-=200')
-			// buttons
-			.add(cta.children, {
-				opacity: 1
-			}, stagger(p => '+=' + (p * 800 + 400)))
-			.play();
-	});
+	const blogs = [
+		{
+			title: 'Setup Docker on a VPS',
+			desc: 'In this guide a setup a vps',
+			href: '/blog/docker'
+		},
+		{
+			title: 'Setup Postfix on a VPS',
+			desc: 'In this guide a setup a vps',
+			href: '/blog/postfix'
+		},
+		{
+			title: 'Setup Postgres on a VPS',
+			desc: 'In this guide a setup a vps',
+			href: '/blog/postgres'
+		},
+		{
+			title: 'Setup Nginx on a VPS',
+			desc: 'In this guide a setup a vps',
+			href: '/blog/nginx'
+		}
+	];
 </script>
 
 <svelte:head>
 	<title>Sören Meier</title>
 </svelte:head>
 
-<div class="intro">
-	<div class="bg">
-		<IntroBg />
+<Intro />
+
+<!-- <div class="projects">
+	<div class="ctn-cont">
+		<h2>Projekte</h2>
 	</div>
+</div> -->
 
-	<div class="top-placeholder"></div>
+<div class="blog">
+	<div class="ctn-cont">
+		<h2>Blog / Guides</h2>
 
-	<div class="ctn ctn-cont" bind:this={ctnCont}>
-		<h1>
-			<span class="hi">Hi</span>
-			<span class="name">I'm Sören</span>
-		</h1>
-		<span class="role">A Passionate Full-Stack Developer</span>
-		<p>I enjoy building websites, web apps, and interconnected services especially when using Rust and Svelte.</p>
+		<div class="list">
+			{#each blogs as blog}
+				<article>
+					<a href={blog.href}>
+						<h3>{blog.title}</h3>
+						<p>{blog.desc}</p>
 
-		<div class="cta">
-			<a href="https://github.com/soerenmeier">Github</a>
-			<a href="https://twitter.com/soeren_meier">X</a>
+						<!-- <p>Created on <datetime /> -->
+					</a>
+				</article>
+			{/each}
 		</div>
 	</div>
 </div>
 
-<div class="projects"></div>
-
-<div class="blog"></div>
-
 
 <style lang="scss">
-	.intro {
-		display: flex;
-		min-height: 100vh;
-		min-height: 100svh;
-		flex-direction: column;
+	.projects {
 		background-color: var(--bg-dark-400);
-		color: #fff;
-	}
+		color: white;
 
-	.bg {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		overflow: hidden;
-
-		background-image: radial-gradient(circle at center top,
-			#424291, var(--bg-dark-400)
-		);
-	}
-
-	.top-placeholder {
-		flex-grow: 1.7;
-	}
-
-	.ctn {
-		position: relative;
-		flex-grow: 1;
-	}
-
-	h1 {
-		font-size: 5rem;
-		line-height: 1.2;
-		font-weight: 600;
-
-		:global(span) {
-			opacity: 0;
+		h2 {
+			font-size: 4rem;
+			line-height: 1.2;
+			font-weight: 600;
 		}
 	}
 
-	.role {
-		display: block;
-		// margin-top: .2rem;
-		font-weight: 500;
-		font-size: 1.3rem;
-		line-height: 1.2;
-		color: rgba(255, 255, 255, .7);
-		opacity: 0;
+	.blog {
+		padding: 10rem 0;
+		background-color: var(--bg-dark-400);
+		color: white;
 
-		:global(span) {
-			opacity: 0;
+		h2 {
+			font-size: 4rem;
+			line-height: 1.2;
+			font-weight: 600;
+			margin-bottom: 4rem;
 		}
-	}
 
-	.ctn {
-		p {
-			margin-top: 1.5rem;
+		.list {
 			max-width: 600px;
-			color: rgba(255, 255, 255, .5);
-			opacity: 0;
+		}
 
-			:global(span) {
-				opacity: 0;
+		article {
+			margin-bottom: 1rem;
+			border-bottom: 1px solid rgba(255, 255, 255, .4);
+
+			&:last-child {
+				margin-bottom: 0;
 			}
-		}
 
-		.cta {
-			display: flex;
-			margin-top: 2.5rem;
-			gap: 1rem;
-		}
+			a {
+				display: block;
+				padding-bottom: .5rem;
+				color: inherit;
+				text-decoration: none;
+				transition: opacity .3s ease;
 
-		a {
-			display: block;
-			color: white;
-			text-decoration: none;
-			padding: .4rem .88rem;
-			border: 1px solid rgba(255, 255, 255, .5);
-			transition: background-color .4s ease;
-			opacity: 0;
+				&:hover {
+					opacity: .7;
+				}
+			}
 
-			&:hover {
-				background-color: rgba(255, 255, 255, .1);
+			h3 {
+				font-size: 1.5rem;
+				line-height: 1.2;
+				font-weight: 600;
+				color: #c5c5c5;
+			}
+
+			p {
+				color: #818181;
 			}
 		}
 	}
 
 	@media (max-width: 600px) {
-		h1 {
-			font-size: 3rem;
-		}
-	}
+		.blog {
+			h2 {
+				font-size: 2.5rem;
+				margin-bottom: 3rem;
+			}
 
-	@media (max-width: 500px) {
-		.role {
-			font-size: 1.2rem;
+			article h3 {
+				font-size: 1.4rem;
+			}
 		}
 	}
 </style>
