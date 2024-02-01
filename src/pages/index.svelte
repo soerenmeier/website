@@ -3,6 +3,11 @@
 
 	const blogs = [
 		{
+			title: 'Setup ssh on a VPS',
+			desc: 'In this guide a setup a vps',
+			href: '/blog/setup-ssh'
+		},
+		{
 			title: 'Setup Docker on a VPS',
 			desc: 'In this guide a setup a vps',
 			href: '/blog/docker'
