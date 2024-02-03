@@ -79,6 +79,7 @@
 			cursor: pointer;
 			padding: 1rem 2rem 1rem 0;
 			transition: opacity .2s ease;
+			text-decoration: none;
 
 			&:hover {
 				opacity: 0.5;

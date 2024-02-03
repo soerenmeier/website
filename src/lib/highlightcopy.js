@@ -15,7 +15,7 @@ export default function highlightCopy() {
 				if (!navigator.clipboard)
 					return;
 
-				await navigator.clipboard.writeText(text);
+				await navigator.clipboard.writeText(text.trim());
 
 				const noti = document.createElement('span');
 				noti.innerText = 'Copied';

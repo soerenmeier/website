@@ -62,11 +62,11 @@ This disables password-based logins, enforcing key authentication.
 ### 4. Restart SSH Service
 Apply the changes by restarting the SSH service:
 ```bash
-systemctl restart ssh
+sudo systemctl restart ssh
 ```
 
 
 ## Changing the Hostname
 ```bash
-hostnamectl set-hostname [new-hostname]
+sudo hostnamectl set-hostname [new-hostname]
 ```
