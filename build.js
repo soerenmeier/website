@@ -58,7 +58,7 @@ async function main() {
 		});
 
 		if (status != '200')
-			throw new Error('expected 200 status');
+			throw new Error('expected 200 status on ' + route.uri);
 
 		try {
 			await fs.mkdir('dist' + dir, { recursive: true });
