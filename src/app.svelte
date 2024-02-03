@@ -3,20 +3,12 @@
 	import Navigation from './layout/navigation.svelte';
 	import Footer from './layout/footer.svelte';
 
-	export let page;
+	export let component;
+	export let props;
 </script>
 
-<!-- <header>
-	<Navigation />
-</header> -->
-
 <main>
-	{#key page}
-		<svelte:component this={page.component} {...page.props} />
+	{#key component}
+		<svelte:component this={component} {...props} />
 	{/key}
 </main>
-
-
-<!-- <footer>
-	<Footer />
-</footer> -->

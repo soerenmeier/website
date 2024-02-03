@@ -20,7 +20,7 @@
 	"dependencies": {
 		"chnobli": "^0.1",
 		"fire": "npm:fire-lib-js@^0.2.3",
-		"fire-svelte": "npm:fire-lib-js-svelte@^0.2.2",
+		"fire-svelte": "npm:fire-lib-js-svelte@^0.2.3",
 		"highlight.js": "^11.9.0",
 		"sass": "^1.67.0"
 	}

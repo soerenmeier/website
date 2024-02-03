@@ -17,10 +17,8 @@ export async function handleRoute(route) {
 			return {
 				status: 500,
 				props: {
-					page: {
-						component: routes.NotFound,
-						props: {}
-					}
+					component: routes.NotFound,
+					props: {}
 				}
 			};
 		}
@@ -28,10 +26,8 @@ export async function handleRoute(route) {
 		return {
 			status: 200,
 			props: {
-				page: {
-					component: comp.default,
-					props: pageProps
-				}
+				component: comp.default,
+				props: pageProps
 			}
 		};
 	}
@@ -39,10 +35,8 @@ export async function handleRoute(route) {
 	return {
 		status: 404,
 		props: {
-			page: {
-				component: routes.NotFound,
-				props: {}
-			}
+			component: routes.NotFound,
+			props: {}
 		}
 	};
 }

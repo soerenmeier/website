@@ -9,8 +9,6 @@ export default function highlightCopy() {
 			btn.innerHTML = highlightCopySvg;
 			btn.classList.add('highlight-js-copy');
 
-			console.log('highlighted', el);
-
 			el.parentElement.appendChild(btn);
 
 			btn.addEventListener('click', async () => {

@@ -7,31 +7,32 @@
 			desc: 'In this guide a setup a vps',
 			href: '/blog/setup-ssh'
 		},
-		{
-			title: 'Setup Docker on a VPS',
-			desc: 'In this guide a setup a vps',
-			href: '/blog/docker'
-		},
-		{
-			title: 'Setup Postfix on a VPS',
-			desc: 'In this guide a setup a vps',
-			href: '/blog/postfix'
-		},
-		{
-			title: 'Setup Postgres on a VPS',
-			desc: 'In this guide a setup a vps',
-			href: '/blog/postgres'
-		},
-		{
-			title: 'Setup Nginx on a VPS',
-			desc: 'In this guide a setup a vps',
-			href: '/blog/nginx'
-		}
+		// {
+		// 	title: 'Setup Docker on a VPS',
+		// 	desc: 'In this guide a setup a vps',
+		// 	href: '/blog/docker'
+		// },
+		// {
+		// 	title: 'Setup Postfix on a VPS',
+		// 	desc: 'In this guide a setup a vps',
+		// 	href: '/blog/postfix'
+		// },
+		// {
+		// 	title: 'Setup Postgres on a VPS',
+		// 	desc: 'In this guide a setup a vps',
+		// 	href: '/blog/postgres'
+		// },
+		// {
+		// 	title: 'Setup Nginx on a VPS',
+		// 	desc: 'In this guide a setup a vps',
+		// 	href: '/blog/nginx'
+		// }
 	];
 </script>
 
 <svelte:head>
 	<title>Sören Meier</title>
+	<meta name="description" content="I enjoy building websites, web apps, and interconnected services.">
 </svelte:head>
 
 <Intro />

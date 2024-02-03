@@ -1,47 +1,72 @@
 ---
-title: Setup Ssh
-description: How to setup ssh on a vps
+title: Setting Up SSH on a VPS
+description: A step-by-step guide on configuring SSH for secure access to your VPS.
 ---
 
-After creating your vps you might receive an ip, a username and a password to login into you're vps.
+Setting up SSH (Secure Shell) on a Virtual Private Server (VPS) is crucial for secure remote management. After acquiring your VPS, you'll typically receive an IP address, a username, and a password. Here's a short guide to help you establish a secure SSH setup.
 
-Log into you're vps via ssh.
+## Logging into Your VPS via SSH
+Initially, you will log into your VPS using the provided credentials.
 
-## create a new user
-First of all make sure you're root, `su -`.
+
+## Creating a New User
+It's best practice to operate as a non-root user with sudo privileges. Here’s how to create one:
+
+### 1. Become Root
+Access the root account by entering:
 ```bash
-## become root
 su -
-## add a new user
-adduser username
-## add the user to the sudo group
-usermod -aG sudo username
-## remove the previous user
-deluser --remove-home oldusername
-## If you get some process is still running restart the machine
-## this should fix it
 ```
 
-## add ssh keys
-To add ssh keys, we need to make sure the folder `~/.ssh` exists on the server. The key can then be added to `~/.ssh/authorized_keys`.
+### 2. Add a New User
+```bash
+adduser [newusername]
+```
 
-In the file `/etc/ssh/sshd_config` the following lines need to be set / updated:
+### 3. Grant Sudo Privileges
+```bash
+# install sudo if needed
+apt install sudo
+usermod -aG sudo [newusername]
+```
+
+### 4. Remove the Old User
+```bash
+deluser --remove-home [oldusername]
+```
+If you encounter a message indicating that processes are still running, a system restart should resolve it.
+
+
+## Adding SSH Keys
+SSH keys offer a more secure way of logging into a server with SSH than using a password alone.
+
+### 1. Ensure the SSH Directory Exists
+On your server, check if the `~/.ssh` directory is present. If not, create it.
+```bash
+mkdir ~/.ssh
+```
+
+### 2. Add some keys
+Add the to the following files:
+```bash
+nano ~/.ssh/authorized_keys
+```
+
+### 3. Update SSH Configuration
+Edit the `/etc/ssh/sshd_config` file:
 ```
 PasswordAuthentication no
 ```
-and then ssh can be restarted: `systemctl restart ssh`
+This disables password-based logins, enforcing key authentication.
 
-## Install sudo
-Become root `su -`
-
-
+### 4. Restart SSH Service
+Apply the changes by restarting the SSH service:
 ```bash
-apt install sudo
-# give the user the sudo group
-usermod -aG sudo username
+systemctl restart ssh
 ```
 
-Change password with `passwd`
 
-## change hostname
-`hostnamectl set-hostname new-hostname`
+## Changing the Hostname
+```bash
+hostnamectl set-hostname [new-hostname]
+```

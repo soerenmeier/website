@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, getContext } from 'svelte';
 
 	import hljs from 'highlight.js/lib/core';
 	import javascript from 'highlight.js/lib/languages/javascript';
@@ -8,14 +8,20 @@
 	import 'highlight.js/styles/hybrid.css';
 	import highlightCopy from '@/lib/highlightcopy.js';
 
+	const router = getContext('router');
+	const currentRequest = router.currentRequest;
+
 	hljs.registerLanguage('javascript', javascript);
 	hljs.registerLanguage('rust', rust);
 	hljs.registerLanguage('bash', bash);
-	// if (!import.meta.env.SSR)
 	hljs.addPlugin(highlightCopy());
 
 	export let title;
 	export let desc;
+
+	function onBack() {
+		router.back();
+	}
 
 	onMount(() => {
 		hljs.highlightAll();
@@ -28,6 +34,16 @@
 </svelte:head>
 
 <div id="blog">
+	<div class="back">
+		<div class="ctn-cont">
+			{#if router.canGoBack($currentRequest)}
+				<button on:click={onBack}>Back</button>
+			{:else}
+				<a href="/">Go Home</a>
+			{/if}
+		</div>
+	</div>
+
 	<div class="intro">
 		<div class="ctn-cont">
 			<h1>{title}</h1>
@@ -47,6 +63,27 @@
 		min-height: 100svh;
 		background-color: var(--bg-dark-400);
 		color: white;
+	}
+
+	.back {
+		position: absolute;
+		top: 1rem;
+		z-index: 1;
+
+		button, a {
+			appearance: none;
+			border: none;
+			border-radius: 0;
+			background-color: transparent;
+			color: inherit;
+			cursor: pointer;
+			padding: 1rem 2rem 1rem 0;
+			transition: opacity .2s ease;
+
+			&:hover {
+				opacity: 0.5;
+			}
+		}
 	}
 
 	.intro {
@@ -77,25 +114,41 @@
 
 	.ctn :global {
 		padding-top: 5rem;
+		padding-bottom: 2rem;
+
+		h2, h3, p {
+			max-width: 50rem;
+		}
 
 		h2 {
-			font-size: 2rem;
+			font-size: 1.8rem;
 			line-height: 1.2;
 			font-weight: 600;
-			margin-bottom: 4rem;
+			margin-top: 2.5rem;
+			margin-bottom: 1rem;
 		}
 
 		h3 {
-			font-size: 1.5rem;
+			font-size: 1.3rem;
 			line-height: 1.2;
 			font-weight: 600;
 			color: #c5c5c5;
+			margin-top: 2.5rem;
+			margin-bottom: 1rem;
+		}
+
+		p {
+			margin-bottom: 1rem;
 		}
 
 		code:not(.hljs) {
 			// font-style: italic;
 			padding: 0.2em 0.3em;
 			background-color: #1d1f21;
+		}
+
+		code.hljs {
+			margin-bottom: 1rem;
 		}
 
 		pre {
