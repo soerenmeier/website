@@ -61,7 +61,7 @@ async function main() {
 			throw new Error('expected 200 status');
 
 		try {
-			await fs.mkdir('dist' + dir);
+			await fs.mkdir('dist' + dir, { recursive: true });
 		} catch (e) {
 			console.log('could not create dir', 'dist' + dir);
 		}
