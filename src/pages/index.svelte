@@ -3,8 +3,8 @@
 
 	const blogs = [
 		{
-			title: 'Setup ssh on a VPS',
-			desc: 'In this guide a setup a vps',
+			title: 'Setting Up SSH on a VPS',
+			desc: 'A step-by-step guide on configuring SSH for secure access to your VPS.',
 			href: '/blog/setup-ssh'
 		},
 		// {
