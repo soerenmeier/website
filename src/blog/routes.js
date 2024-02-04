@@ -8,16 +8,16 @@ export function register(router) {
 			'/blog/' + path.substring(2, path.length - 3),
 			async () => {
 				const { html, attributes } = await routes[path]();
-				const {
-				default: MdBlog
-				} = await import('@/templates/mdblog.svelte');
+				const { default: MdBlog } = await import(
+					'@/templates/mdblog.svelte'
+				);
 
 				return {
 					loadProps: () => {
-						return { html, attributes }
+						return { html, attributes };
 					},
-					default: MdBlog
-				}
+					default: MdBlog,
+				};
 			}
 		);
 	}

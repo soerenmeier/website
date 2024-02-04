@@ -11,17 +11,15 @@ export default defineConfig(({ outDir, mode, ssrBuild }) => {
 		plugins: [
 			svelte({
 				compilerOptions: {
-					hydratable: true
+					hydratable: true,
 				},
-				preprocess: [sveltePreprocess()]
+				preprocess: [sveltePreprocess()],
 			}),
 			mdPlugin({ mode: 'html' }),
-			usedSsrComponents(f => relative(__dirname, f))
+			usedSsrComponents(f => relative(__dirname, f)),
 		],
 		resolve: {
-			alias: [
-				{ find: '@', replacement: resolve(__dirname, 'src') }
-			]
-		}
+			alias: [{ find: '@', replacement: resolve(__dirname, 'src') }],
+		},
 	};
 });

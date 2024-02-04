@@ -12,7 +12,7 @@ async function createDevServer() {
 
 	const vite = await createViteServer({
 		server: { middlewareMode: true },
-		appType: 'custom'
+		appType: 'custom',
 	});
 
 	app.use(vite.middlewares);
@@ -22,10 +22,7 @@ async function createDevServer() {
 
 		try {
 			// 1. Read index.html
-			let template = fs.readFileSync(
-				'./index.html',
-				'utf-8'
-			);
+			let template = fs.readFileSync('./index.html', 'utf-8');
 
 			template = await vite.transformIndexHtml(url, template);
 
@@ -34,7 +31,7 @@ async function createDevServer() {
 			const { status, fields } = await render({
 				method: 'GET',
 				uri: url,
-				headers: req.headers
+				headers: req.headers,
 			});
 
 			let html = template;
@@ -65,7 +62,5 @@ async function createProdServer() {
 	console.log('listening on 8080');
 }
 
-if (process.argv.pop() === 'dev')
-	createDevServer();
-else
-	createProdServer();
+if (process.argv.pop() === 'dev') createDevServer();
+else createProdServer();

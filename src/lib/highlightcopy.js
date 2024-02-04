@@ -1,7 +1,6 @@
 import { timeout } from 'fire/util.js';
 import highlightCopySvg from './highlightcopy.svg?raw';
 
-
 export default function highlightCopy() {
 	return {
 		'after:highlightElement': ({ el, text }) => {
@@ -12,8 +11,7 @@ export default function highlightCopy() {
 			el.parentElement.appendChild(btn);
 
 			btn.addEventListener('click', async () => {
-				if (!navigator.clipboard)
-					return;
+				if (!navigator.clipboard) return;
 
 				await navigator.clipboard.writeText(text.trim());
 
@@ -27,6 +25,6 @@ export default function highlightCopy() {
 
 				noti.remove();
 			});
-		}
+		},
 	};
 }

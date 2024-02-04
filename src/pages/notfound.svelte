@@ -16,7 +16,10 @@
 	<div class="ctn ctn-cont">
 		<div class="inner">
 			<h1>The page could not be found</h1>
-			<p>I enjoy building websites, web apps, and interconnected services especially when using Rust and Svelte.</p>
+			<p>
+				I enjoy building websites, web apps, and interconnected services
+				especially when using Rust and Svelte.
+			</p>
 
 			<div class="cta">
 				<a href="/">To the homepage</a>
@@ -43,8 +46,10 @@
 		width: 100%;
 		height: 100%;
 		overflow: hidden;
-		background: radial-gradient(circle at center top,
-			#424291, var(--bg-dark-400)
+		background: radial-gradient(
+			circle at center top,
+			#424291,
+			var(--bg-dark-400)
 		);
 	}
 
@@ -69,7 +74,7 @@
 
 	p {
 		margin-top: 1rem;
-		color: rgba(255, 255, 255, .7);
+		color: rgba(255, 255, 255, 0.7);
 	}
 
 	.cta {
@@ -82,12 +87,12 @@
 		display: block;
 		color: white;
 		text-decoration: none;
-		padding: .4rem .88rem;
-		border: 1px solid rgba(255, 255, 255, .5);
-		transition: background-color .4s ease;
+		padding: 0.4rem 0.88rem;
+		border: 1px solid rgba(255, 255, 255, 0.5);
+		transition: background-color 0.4s ease;
 
 		&:hover {
-			background-color: rgba(255, 255, 255, .1);
+			background-color: rgba(255, 255, 255, 0.1);
 		}
 	}
 </style>

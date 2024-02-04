@@ -5,34 +5,37 @@
 		{
 			title: 'Setting Up SSH on a VPS',
 			desc: 'A step-by-step guide on configuring SSH for secure access to your VPS.',
-			href: '/blog/setup-ssh'
+			href: '/blog/setup-ssh',
 		},
 		{
 			title: 'Setting Up Postfix on a VPS',
 			desc: 'A step-by-step guide on configuring postfix to send emails.',
-			href: '/blog/setup-postfix'
+			href: '/blog/setup-postfix',
 		},
 		{
 			title: 'Setting Up Postgres on a VPS',
 			desc: 'A step-by-step guide to configure postgres.',
-			href: '/blog/setup-postgres'
+			href: '/blog/setup-postgres',
 		},
-		// {
-		// 	title: 'Setup Docker on a VPS',
-		// 	desc: 'In this guide a setup a vps',
-		// 	href: '/blog/docker'
-		// },
-		// {
-		// 	title: 'Setup Nginx on a VPS',
-		// 	desc: 'In this guide a setup a vps',
-		// 	href: '/blog/nginx'
-		// }
+		{
+			title: 'Setting Up Docker on a VPS',
+			desc: 'A step-by-step guide on setting up docker to run containers.',
+			href: '/blog/setup-docker',
+		},
+		{
+			title: 'Setting Up Nginx on a VPS',
+			desc: 'A step-by-step guide on setting up nginx as a reverse proxy.',
+			href: '/blog/setup-nginx',
+		},
 	];
 </script>
 
 <svelte:head>
 	<title>Sören Meier</title>
-	<meta name="description" content="I enjoy building websites, web apps, and interconnected services.">
+	<meta
+		name="description"
+		content="I enjoy building websites, web apps, and interconnected services."
+	/>
 </svelte:head>
 
 <Intro />
@@ -61,7 +64,6 @@
 		</div>
 	</div>
 </div>
-
 
 <style lang="scss">
 	.projects {
@@ -93,7 +95,7 @@
 
 		article {
 			margin-bottom: 1rem;
-			border-bottom: 1px solid rgba(255, 255, 255, .4);
+			border-bottom: 1px solid rgba(255, 255, 255, 0.4);
 
 			&:last-child {
 				margin-bottom: 0;
@@ -101,13 +103,13 @@
 
 			a {
 				display: block;
-				padding-bottom: .5rem;
+				padding-bottom: 0.5rem;
 				color: inherit;
 				text-decoration: none;
-				transition: opacity .3s ease;
+				transition: opacity 0.3s ease;
 
 				&:hover {
-					opacity: .7;
+					opacity: 0.7;
 				}
 			}
 

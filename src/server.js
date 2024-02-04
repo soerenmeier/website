@@ -9,8 +9,8 @@ import { handleRoute } from './main.js';
 // opt: { method, uri, ?ssrManifest }
 // returns: { status, body, head }
 export async function render(req, opt) {
-	const cache = new SsrCache;
-	const router = new Router;
+	const cache = new SsrCache();
+	const router = new Router();
 
 	routes.register(router);
 
@@ -19,8 +19,8 @@ export async function render(req, opt) {
 	const route = router.route(req);
 	const { status, props } = await handleRoute(route);
 
-	const ssrComponents = new SsrComponents;
-	const context = new Map;
+	const ssrComponents = new SsrComponents();
+	const context = new Map();
 	context.set('router', router);
 	ssrComponents.addToContext(context);
 
@@ -33,8 +33,8 @@ export async function render(req, opt) {
 		status,
 		fields: {
 			head,
-			body: html
-		}
+			body: html,
+		},
 	};
 }
 

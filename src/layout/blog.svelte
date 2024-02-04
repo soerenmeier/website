@@ -30,7 +30,7 @@
 
 <svelte:head>
 	<title>{title}</title>
-	<meta name="description" content={desc}>
+	<meta name="description" content={desc} />
 </svelte:head>
 
 <div id="blog">
@@ -70,7 +70,8 @@
 		top: 1rem;
 		z-index: 1;
 
-		button, a {
+		button,
+		a {
 			appearance: none;
 			border: none;
 			border-radius: 0;
@@ -78,7 +79,7 @@
 			color: inherit;
 			cursor: pointer;
 			padding: 1rem 2rem 1rem 0;
-			transition: opacity .2s ease;
+			transition: opacity 0.2s ease;
 			text-decoration: none;
 
 			&:hover {
@@ -92,12 +93,14 @@
 		// min-height: 20vh;
 		padding: 10rem 0 8rem;
 
-		background: radial-gradient(circle at center top,
-			#424291, var(--bg-dark-400)
+		background: radial-gradient(
+			circle at center top,
+			#424291,
+			var(--bg-dark-400)
 		);
 
 		&::after {
-			content: "";
+			content: '';
 			position: absolute;
 			left: 0;
 			bottom: 0;
@@ -117,7 +120,9 @@
 		padding-top: 5rem;
 		padding-bottom: 2rem;
 
-		h2, h3, p {
+		h2,
+		h3,
+		p {
 			max-width: 50rem;
 		}
 
@@ -142,6 +147,10 @@
 			margin-bottom: 1rem;
 		}
 
+		a {
+			color: inherit;
+		}
+
 		code:not(.hljs) {
 			// font-style: italic;
 			padding: 0.2em 0.3em;
@@ -159,13 +168,13 @@
 		.highlight-js-copy {
 			position: absolute;
 			top: 1rem;
-			right: .8rem;
+			right: 0.8rem;
 			appearance: none;
 			border: none;
 			border-radius: 0;
 			background-color: transparent;
 			cursor: pointer;
-			transition: opacity .4s ease;
+			transition: opacity 0.4s ease;
 
 			&:hover {
 				opacity: 0.5;

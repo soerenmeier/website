@@ -5,10 +5,10 @@ import * as routes from './pages/routes.js';
 import { handleRoute } from './main.js';
 
 async function main() {
-	const cache = new SsrCache;
-	const router = new Router;
+	const cache = new SsrCache();
+	const router = new Router();
 
-	const context = new Map;
+	const context = new Map();
 	context.set('router', router);
 
 	routes.register(router);
@@ -18,15 +18,14 @@ async function main() {
 	router.onRoute(async (req, route, routing) => {
 		const { props } = await handleRoute(route);
 
-		if (await routing.dataReady())
-			return;
+		if (await routing.dataReady()) return;
 
 		if (!app) {
 			app = new App({
 				target: document.body,
 				props,
 				hydrate: true,
-				context
+				context,
 			});
 		} else {
 			app.$set(props);

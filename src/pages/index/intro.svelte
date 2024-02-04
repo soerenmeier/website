@@ -19,50 +19,86 @@
 				{
 					'--bg-color-transition': '#424291',
 					ease: cubicOut,
-					duration: 2000
+					duration: 2000,
 				},
-				'+=200'
+				'+=200',
 			)
-			.add(h1.children[0], {
-				opacity: 1,
-				ease: cubicOut,
-				duration: 2000
-			}, 500)
-			.nest(tl => {
-				tl.set(h1.children[1], { opacity: 1 })
-				.add(chars(h1.children[1]), {
+			.add(
+				h1.children[0],
+				{
 					opacity: 1,
-					duration: 800
-				}, stagger(p => p * 110))
-				.add(chars(h1.children[1]), {
-					y: from(-5),
-					ease: quadOut,
-					duration: 400
-				}, stagger(p => p * 110))
-			}, {}, 1000)
+					ease: cubicOut,
+					duration: 2000,
+				},
+				500,
+			)
+			.nest(
+				tl => {
+					tl.set(h1.children[1], { opacity: 1 })
+						.add(
+							chars(h1.children[1]),
+							{
+								opacity: 1,
+								duration: 800,
+							},
+							stagger(p => p * 110),
+						)
+						.add(
+							chars(h1.children[1]),
+							{
+								y: from(-5),
+								ease: quadOut,
+								duration: 400,
+							},
+							stagger(p => p * 110),
+						);
+				},
+				{},
+				1000,
+			)
 			// role
 			.set(role, { opacity: 1 }, '-=200')
-			.add(chars(role), {
-				opacity: 1,
-				duration: 800
-			}, stagger(p => '+=' + p * 20))
-			// text
-			.nest(tl => {
-				tl.set(text, { opacity: 1 })
-				.add(words(text), {
-					y: from(5),
-					ease: quadOut,
-					duration: 600
-				}, stagger(p => p * 100))
-				.add(words(text), {
+			.add(
+				chars(role),
+				{
 					opacity: 1,
-					duration: 800
-				}, stagger(p => p * 100))
-			}, {}, '-=200')
+					duration: 800,
+				},
+				stagger(p => '+=' + p * 20),
+			)
+			// text
+			.nest(
+				tl => {
+					tl.set(text, { opacity: 1 })
+						.add(
+							words(text),
+							{
+								y: from(5),
+								ease: quadOut,
+								duration: 600,
+							},
+							stagger(p => p * 100),
+						)
+						.add(
+							words(text),
+							{
+								opacity: 1,
+								duration: 800,
+							},
+							stagger(p => p * 100),
+						);
+				},
+				{},
+				'-=200',
+			)
 			// buttons
-			.add(cta.children, {
-				opacity: 1
-			}, stagger(p => '+=' + (p * 800 + 400)))
+			.add(
+				cta.children,
+				{
+					opacity: 1,
+				},
+				stagger(p => '+=' + (p * 800 + 400)),
+			)
 			.play();
 	});
 </script>
@@ -80,7 +116,10 @@
 			<span class="name">I'm Sören</span>
 		</h1>
 		<span class="role">A Passionate Full-Stack Developer</span>
-		<p>I enjoy building websites, web apps, and interconnected services especially when using Rust and Svelte.</p>
+		<p>
+			I enjoy building websites, web apps, and interconnected services
+			especially when using Rust and Svelte.
+		</p>
 
 		<div class="cta">
 			<a href="https://github.com/soerenmeier">Github</a>
@@ -110,12 +149,14 @@
 
 		--bg-color-transition: var(--bg-dark-400);
 
-		background: radial-gradient(circle at center top,
-			var(--bg-color-transition), var(--bg-dark-400)
+		background: radial-gradient(
+			circle at center top,
+			var(--bg-color-transition),
+			var(--bg-dark-400)
 		);
 
 		&::after {
-			content: "";
+			content: '';
 			position: absolute;
 			left: 0;
 			bottom: 0;
@@ -150,7 +191,7 @@
 		font-weight: 500;
 		font-size: 1.3rem;
 		line-height: 1.2;
-		color: rgba(255, 255, 255, .7);
+		color: rgba(255, 255, 255, 0.7);
 		opacity: 0;
 
 		:global(span) {
@@ -162,7 +203,7 @@
 		p {
 			margin-top: 1.5rem;
 			max-width: 600px;
-			color: rgba(255, 255, 255, .5);
+			color: rgba(255, 255, 255, 0.5);
 			opacity: 0;
 
 			:global(span) {
@@ -180,13 +221,13 @@
 			display: block;
 			color: white;
 			text-decoration: none;
-			padding: .4rem .88rem;
-			border: 1px solid rgba(255, 255, 255, .5);
-			transition: background-color .4s ease;
+			padding: 0.4rem 0.88rem;
+			border: 1px solid rgba(255, 255, 255, 0.5);
+			transition: background-color 0.4s ease;
 			opacity: 0;
 
 			&:hover {
-				background-color: rgba(255, 255, 255, .1);
+				background-color: rgba(255, 255, 255, 0.1);
 			}
 		}
 	}

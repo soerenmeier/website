@@ -9,17 +9,15 @@ export async function handleRoute(route) {
 
 			if (typeof comp.loadProps === 'function')
 				pageProps = await comp.loadProps(route.props);
-			else
-				pageProps = {};
-
+			else pageProps = {};
 		} catch (e) {
 			console.log('error', e);
 			return {
 				status: 500,
 				props: {
 					component: routes.NotFound,
-					props: {}
-				}
+					props: {},
+				},
 			};
 		}
 
@@ -27,8 +25,8 @@ export async function handleRoute(route) {
 			status: 200,
 			props: {
 				component: comp.default,
-				props: pageProps
-			}
+				props: pageProps,
+			},
 		};
 	}
 
@@ -36,7 +34,7 @@ export async function handleRoute(route) {
 		status: 404,
 		props: {
 			component: routes.NotFound,
-			props: {}
-		}
+			props: {},
+		},
 	};
 }

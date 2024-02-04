@@ -6,7 +6,6 @@ import Router from 'fire-svelte/routing/router.js';
 
 const exec = util.promisify(command.exec);
 
-
 async function main() {
 	console.info('build client');
 	await exec('npx vite build --outDir dist-client --ssrManifest');
@@ -19,42 +18,38 @@ async function main() {
 		await fs.rm('dist', { force: true, recursive: true });
 	} catch (e) {}
 
-	await fs.cp(
-		'dist-client/',
-		'dist/',
-		{ recursive: true }
-	);
+	await fs.cp('dist-client/', 'dist/', { recursive: true });
 	await fs.rm('dist/index.html');
 	try {
 		await fs.rm('dist/.vite', { force: true, recursive: true });
 	} catch (e) {}
 
-	const indexHtml = await fs.readFile(
-		'dist-client/index.html',
-		{ encoding: 'utf8' }
+	const indexHtml = await fs.readFile('dist-client/index.html', {
+		encoding: 'utf8',
+	});
+	const ssrManifest = JSON.parse(
+		await fs.readFile('dist-client/.vite/ssr-manifest.json', {
+			encoding: 'utf8',
+		})
 	);
-	const ssrManifest = JSON.parse(await fs.readFile(
-		'dist-client/.vite/ssr-manifest.json',
-		{ encoding: 'utf8' }
-	));
 
 	const server = await import('./dist-server/server.js');
 
-	const router = new Router;
+	const router = new Router();
 	server.routes.register(router);
 
 	for (const route of router.routes) {
 		const dir = route.uri;
 		if (typeof dir !== 'string')
-			throw new Error('only string uri\'s are supported');
+			throw new Error("only string uri's are supported");
 
 		const { status, fields } = await server.render({
 			method: 'GET',
 			uri: route.uri,
 			ssrManifest,
 			headers: {
-				host: 'localhost'
-			}
+				host: 'localhost',
+			},
 		});
 
 		if (status != '200')

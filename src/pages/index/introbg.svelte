@@ -34,15 +34,17 @@
 
 				if (mouse) {
 					const dist = Math.sqrt(
-						Math.pow(mouse.x - circleX, 2)
-						+ Math.pow(mouse.y - circleY, 2)
+						Math.pow(mouse.x - circleX, 2) +
+							Math.pow(mouse.y - circleY, 2),
 					);
 
-					const relDist = Math.max(Math.min(dist / hoverRadius, 1), 0);
+					const relDist = Math.max(
+						Math.min(dist / hoverRadius, 1),
+						0,
+					);
 
 					size = sineIn(1 - relDist) * 2 + size;
 				}
-
 
 				ctx.fillCircle(circleX, circleY, size);
 			}
@@ -58,7 +60,7 @@
 	function onMouseMove(e) {
 		mouse = {
 			x: e.pageX,
-			y: Math.min(e.pageY, window.innerHeight)
+			y: Math.min(e.pageY, window.innerHeight),
 		};
 	}
 
@@ -73,7 +75,6 @@
 <svelte:window on:resize={onResize} on:mousemove={onMouseMove} />
 
 <canvas bind:this={canvas} />
-
 
 <style lang="scss">
 	canvas {
