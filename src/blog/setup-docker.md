@@ -50,6 +50,11 @@ services:
       - "/data/server/data:/data"
 ```
 
+Make sure that volumes shared with docker have the correct access rights:
+```bash
+sudo chown 1000:1000 data/ -R
+```
+
 After login into youre registry with:
 ```bash
 docker login registry.gitlab.com
