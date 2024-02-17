@@ -183,9 +183,7 @@ server {
 		proxy_buffering off;
 		proxy_request_buffering off;
 
-		proxy_pass http://127.0.0.1:380/;
-
-		proxy_redirect default;
+		proxy_pass http://127.0.0.1:380$request_uri;
 	}
 
 	# redirect server error pages to the static page /50x.html
