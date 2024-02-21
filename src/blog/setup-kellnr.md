@@ -1,5 +1,5 @@
 ---
-title: Setting Up Gitlab on a VPS
+title: Setting Up Kellnr on a VPS
 description: A step-by-step guide on setting up kellnr.
 ---
 
@@ -29,6 +29,7 @@ services:
       - KELLNR_POSTGRESQL__PWD=Apassword
 ```
 
+## Setup the nginx config
 ```
 server {
 	listen 80;

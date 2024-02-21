@@ -5,6 +5,7 @@
 	import javascript from 'highlight.js/lib/languages/javascript';
 	import rust from 'highlight.js/lib/languages/rust';
 	import bash from 'highlight.js/lib/languages/bash';
+	import yaml from 'highlight.js/lib/languages/yaml';
 	import 'highlight.js/styles/hybrid.css';
 	import highlightCopy from '@/lib/highlightcopy.js';
 
@@ -14,6 +15,7 @@
 	hljs.registerLanguage('javascript', javascript);
 	hljs.registerLanguage('rust', rust);
 	hljs.registerLanguage('bash', bash);
+	hljs.registerLanguage('yaml', yaml);
 	hljs.addPlugin(highlightCopy());
 
 	export let title;

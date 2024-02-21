@@ -27,6 +27,49 @@
 			desc: 'A step-by-step guide on setting up nginx as a reverse proxy.',
 			href: '/blog/setup-nginx',
 		},
+		{
+			title: 'Setting Up Gitlab on a VPS',
+			desc: 'A step-by-step guide on setting up gitlab.',
+			href: '/blog/setup-gitlab',
+		},
+		{
+			title: 'Setting Up Kellnr on a VPS',
+			desc: 'A step-by-step guide on setting up kellnr.',
+			href: '/blog/setup-kellnr',
+		},
+	];
+
+	const projects = [
+		{
+			title: 'Chnobli - the best animation library (WIP)',
+			desc: "Chnobli is garlic in swiss german. It's my attempt at an animation library.",
+			href: 'https://chnobli.com',
+		},
+		{
+			title: 'Livgood',
+			desc: 'Connecting building administrators and renters via a touchscreen panel at the building entrance or an app.',
+			href: 'https://livgood.ch',
+		},
+		{
+			title: 'Webtoolbelt',
+			desc: 'An easy tool to lookup dns records or base64 encode a string.',
+			href: 'http://webtoolbelt.dev',
+		},
+		{
+			title: 'Iron OS',
+			desc: 'Buildroot based GNU/Linux running chromium in kiosk mode, used at livgood.',
+			href: 'http://iron-os.com',
+		},
+		{
+			title: 'Alpenwind',
+			desc: 'My home server application allowing to stream movies and store password.',
+			href: 'https://github.com/soerenmeier/alpenwind',
+		},
+		{
+			title: 'Fire Lib',
+			desc: 'Libraries for http or encrypted tcp communication in rust and routing and other utilities in javascript.',
+			href: 'http://fire-lib.com',
+		},
 	];
 </script>
 
@@ -40,13 +83,24 @@
 
 <Intro />
 
-<!-- <div class="projects">
+<div class="pojects listing">
 	<div class="ctn-cont">
-		<h2>Projekte</h2>
-	</div>
-</div> -->
+		<h2>Projects</h2>
 
-<div class="blog">
+		<div class="list">
+			{#each projects as projects}
+				<article>
+					<a href={projects.href}>
+						<h3>{projects.title}</h3>
+						<p>{projects.desc}</p>
+					</a>
+				</article>
+			{/each}
+		</div>
+	</div>
+</div>
+
+<div class="blog listing">
 	<div class="ctn-cont">
 		<h2>Blog / Guides</h2>
 
@@ -65,20 +119,15 @@
 	</div>
 </div>
 
+<footer>
+	<div class="ctn-cont">
+		<p>Working at <a href="https://dunkel.cc">Dunkel</a>.</p>
+	</div>
+</footer>
+
 <style lang="scss">
-	.projects {
-		background-color: var(--bg-dark-400);
-		color: white;
-
-		h2 {
-			font-size: 4rem;
-			line-height: 1.2;
-			font-weight: 600;
-		}
-	}
-
-	.blog {
-		padding: 10rem 0;
+	.listing {
+		padding-top: 10rem;
 		background-color: var(--bg-dark-400);
 		color: white;
 
@@ -118,11 +167,25 @@
 				line-height: 1.2;
 				font-weight: 600;
 				color: #c5c5c5;
+				margin-bottom: 0.1rem;
 			}
 
 			p {
 				color: #818181;
 			}
+		}
+	}
+
+	footer {
+		padding-top: 8rem;
+		padding-bottom: 1rem;
+		background-color: var(--bg-dark-400);
+		color: white;
+
+		a {
+			text-decoration: none;
+			font-weight: bold;
+			color: inherit;
 		}
 	}
 
