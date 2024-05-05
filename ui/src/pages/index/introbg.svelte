@@ -1,7 +1,6 @@
 <script>
-	import { timeout } from 'fire/util.js';
-	import { onMount, onDestroy } from 'svelte';
-	import Context2d from 'fire/dom/context2d.js';
+	import { onMount } from 'svelte';
+	import Context2d from 'fire/dom/Context2d';
 	import { sineIn, quintIn, quintOut } from 'chnobli/easing';
 
 	let canvas, ctx;

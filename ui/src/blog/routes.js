@@ -1,8 +1,6 @@
 const routes = import.meta.glob('./*.md');
 
 export function register(router) {
-	// router.register('/blog/setup-ssh', () => import('./setup-ssh.svelte'));
-
 	for (const path in routes) {
 		router.register(
 			'/blog/' + path.substring(2, path.length - 3),
@@ -18,7 +16,7 @@ export function register(router) {
 					},
 					default: MdBlog,
 				};
-			}
+			},
 		);
 	}
 }

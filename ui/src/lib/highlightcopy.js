@@ -1,4 +1,4 @@
-import { timeout } from 'fire/util.js';
+import { timeout } from 'fire/utils';
 import highlightCopySvg from './highlightcopy.svg?raw';
 
 export default function highlightCopy() {

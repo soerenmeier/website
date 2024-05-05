@@ -52,6 +52,11 @@ Add the to the following files:
 nano ~/.ssh/authorized_keys
 ```
 
+#### Create ed keys
+```bash
+ssh-keygen -t ed25519 -C "soerenmeier@livgood.ch"
+```
+
 ### 3. Update SSH Configuration
 Edit the `/etc/ssh/sshd_config` file:
 ```

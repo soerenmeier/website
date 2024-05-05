@@ -7,7 +7,7 @@ import fetch from 'node-fetch';
 
 globalThis.fetch = fetch;
 
-async function createDevServer() {
+async function createServer() {
 	const app = express();
 
 	const vite = await createViteServer({
@@ -18,19 +18,19 @@ async function createDevServer() {
 	app.use(vite.middlewares);
 
 	app.use('*', async (req, res, next) => {
-		const url = req.originalUrl;
+		const uri = req.originalUrl;
 
 		try {
 			// 1. Read index.html
 			let template = fs.readFileSync('./index.html', 'utf-8');
 
-			template = await vite.transformIndexHtml(url, template);
+			template = await vite.transformIndexHtml(uri, template);
 
-			const { render } = await vite.ssrLoadModule('./src/server.js');
+			const { render } = await vite.ssrLoadModule('./src/server.ts');
 
 			const { status, fields } = await render({
 				method: 'GET',
-				uri: url,
+				uri,
 				headers: req.headers,
 			});
 
@@ -53,14 +53,4 @@ async function createDevServer() {
 	console.log('listening on 8080');
 }
 
-async function createProdServer() {
-	const app = express();
-
-	app.use(express.static('dist'));
-
-	app.listen(8080);
-	console.log('listening on 8080');
-}
-
-if (process.argv.pop() === 'dev') createDevServer();
-else createProdServer();
+createServer();

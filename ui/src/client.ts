@@ -1,8 +1,8 @@
-import App from './app.svelte';
-import Router from 'fire-svelte/routing/router.js';
-import SsrCache from 'fire-svelte/ssr/cache.js';
-import * as routes from './pages/routes.js';
-import { handleRoute } from './main.js';
+import App from './App.svelte';
+import Router from 'fire-svelte/routing/Router';
+import SsrCache from 'fire-svelte/ssr/SsrCache';
+import * as routes from './pages/routes';
+import { handleRoute } from './main';
 
 async function main() {
 	const cache = new SsrCache();
@@ -13,16 +13,17 @@ async function main() {
 
 	routes.register(router);
 
-	let app;
+	let app: App | null;
 
 	router.onRoute(async (req, route, routing) => {
-		const { props } = await handleRoute(route);
+		const { props } = await handleRoute(req, route, cache);
 
 		if (await routing.dataReady()) return;
 
 		if (!app) {
 			app = new App({
 				target: document.body,
+				// @ts-ignore
 				props,
 				hydrate: true,
 				context,
