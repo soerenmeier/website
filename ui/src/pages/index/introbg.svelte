@@ -11,6 +11,7 @@
 		Program,
 		Renderer,
 		Transform,
+		Triangle,
 		Vec3,
 		type OGLRenderingContext,
 	} from 'ogl';
@@ -42,41 +43,14 @@
 
 	let mouse = new Vec3();
 
+	let failedRender = false;
 	async function render(t: number = 0) {
+		if (failedRender) return;
 		requestAnimationFrame(render);
 
-		// program.uniforms.uTime.value = t * 0.001;
-		// program.uniforms.UResolution.value = [
-		// 	window.innerWidth,
-		// 	window.innerHeight,
-		// ];
-		// program.uniforms.uMouse.value = [
-		// 	mouse.x / window.innerWidth,
-		// 	1 - mouse.y / window.innerHeight,
-		// 	0,
-		// ];
+		program.uniforms.uTime.value = t * 0.001;
 
-		lines.forEach(line => {
-			// Update polyline input points
-			for (let i = line.points.length - 1; i >= 0; i--) {
-				if (!i) {
-					// For the first point, spring ease it to the mouse position
-					const start = mouse
-						.clone()
-						.add(line.mouseOffset)
-						.sub(line.points[i])
-						.multiply(line.spring);
-					line.mouseVelocity.add(start).multiply(line.friction);
-					line.points[i].add(line.mouseVelocity);
-				} else {
-					// The rest of the points ease to the point in front of them, making a line
-					line.points[i].lerp(line.points[i - 1], 0.9);
-				}
-			}
-			line.polyline.updateGeometry();
-		});
-
-		renderer.render({ scene });
+		renderer.render({ scene: mesh });
 	}
 
 	function onResize() {
@@ -85,7 +59,12 @@
 		// 	aspect: window.innerWidth / window.innerHeight,
 		// });
 
-		lines.forEach(line => line.polyline.resize());
+		if (program) {
+			program.uniforms.uResolution.value = [
+				window.innerWidth,
+				window.innerHeight,
+			];
+		}
 	}
 
 	function onMouseMove(e: any) {
@@ -101,86 +80,61 @@
 		);
 	}
 
-	// Just a helper function to make the code neater
-	function random(a: number, b: number) {
-		const alpha = Math.random();
-		return a * (1.0 - alpha) + b * alpha;
-	}
-
-	const COLORS = ['#e09f7d', '#ef5d60', '#ec4067', '#a01a7d', '#311847'];
-
-	function initLines() {
-		COLORS.forEach((color, i) => {
-			// Store a few values for each lines' spring movement
-			const line: Line = {
-				spring: random(0.02, 0.1),
-				friction: random(0.7, 0.95),
-				mouseVelocity: new Vec3(),
-				mouseOffset: new Vec3(random(-1, 1) * 0.02),
-				points: [],
-				polyline: null!,
-			};
-
-			// Create an array of Vec3s (eg [[0, 0, 0], ...])
-			// Note: Only pass in one for each point on the line - the class will handle
-			// the doubling of vertices for the polyline effect.
-			const count = 25;
-			for (let i = 0; i < count; i++) {
-				line.points.push(new Vec3());
-			}
-
-			// Pass in the points, and any custom elements - for example here we've made
-			// custom shaders, and accompanying uniforms.
-			line.polyline = new Polyline(gl, {
-				points: line.points,
-				vertex,
-				uniforms: {
-					uColor: { value: new Color(color) },
-					uThickness: { value: random(20, 50) },
-				},
-			});
-
-			line.polyline.mesh.setParent(scene);
-
-			lines.push(line);
-		});
-	}
-
 	onMount(() => {
 		renderer = new Renderer();
 		gl = renderer.gl;
 		cont.appendChild(gl.canvas);
-		gl.clearColor(0.9, 0.9, 0.9, 1);
-
-		// camera = new Camera(gl);
-		// camera.position.z = 5;
-
-		scene = new Transform();
-
-		initLines();
+		gl.clearColor(1, 1, 1, 1);
 
 		onResize();
 
-		// geometry = new Geometry(gl, {
-		// 	position: {
-		// 		size: 2,
-		// 		data: new Float32Array([-1, -1, 3, -1, -1, 3]),
-		// 	},
-		// 	uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) },
-		// });
+		// Rather than using a plane (two triangles) to cover the viewport here is a
+		// triangle that includes -1 to 1 range for 'position', and 0 to 1 range for 'uv'.
+		// Excess will be out of the viewport.
 
-		// program = new Program(gl, {
-		// 	vertex,
-		// 	fragment,
-		// 	uniforms: {
-		// 		uTime: { value: 0 },
-		// 		UResolution: { value: [window.innerWidth, window.innerHeight] },
-		// 		uMouse: { value: [0, 0, 0] },
-		// 	},
-		// });
+		//         position                uv
+		//      (-1, 3)                  (0, 2)
+		//         |\                      |\
+		//         |__\(1, 1)              |__\(1, 1)
+		//         |__|_\                  |__|_\
+		//   (-1, -1)   (3, -1)        (0, 0)   (2, 0)
 
-		// mesh = new Mesh(gl, { geometry, program });
-		// mesh.setParent(scene);
+		geometry = new Triangle(gl);
+
+		program = new Program(gl, {
+			vertex,
+			fragment,
+			uniforms: {
+				uTime: { value: 0 },
+
+				// // rgba(30, 75, 107, 1)
+				// blue: { value: new Color(30 / 255, 75 / 255, 107 / 255) },
+
+				// // rgba(176, 215, 238, 1)
+				// light_blue: {
+				// 	value: new Color(176 / 255, 215 / 255, 238 / 255),
+				// },
+
+				// // rgba(16, 33, 57, 1)
+				// dark: { value: new Color(16 / 255, 33 / 255, 57 / 255) },
+
+				// // rgba(255, 231, 103, 1)
+				// gold: { value: new Color(255 / 255, 231 / 255, 103 / 255) },
+
+				// rgba(178, 153, 103, 1)
+				light: { value: new Color(178 / 255, 153 / 255, 103 / 255) },
+
+				// rgba(79, 70, 57, 1)
+				medium: { value: new Color(79 / 255, 70 / 255, 57 / 255) },
+
+				// rgba(35, 34, 32, 1)
+				dark: { value: new Color(35 / 255, 34 / 255, 32 / 255) },
+
+				uResolution: { value: [window.innerWidth, window.innerHeight] },
+			},
+		});
+
+		mesh = new Mesh(gl, { geometry, program });
 
 		render();
 	});
