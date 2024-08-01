@@ -1,4 +1,5 @@
 <script>
+	import Chess from './index/Chess.svelte';
 	import Intro from './index/intro.svelte';
 
 	const blogs = [
@@ -84,7 +85,7 @@
 <Intro />
 
 <div class="box">
-	<h2>Projects</h2>
+	<h2 class="box-h2">Projects</h2>
 
 	<div class="projects">
 		{#each projects as projects}
@@ -99,32 +100,25 @@
 </div>
 
 <div class="box my-section">
-	<div class="ctn-cont">
-		<h2>Blog / Guides</h2>
+	<h2 class="box-h2">Blog / Guides</h2>
 
-		<div class="blogs">
-			{#each blogs as blog}
-				<article class="blog">
-					<a href={blog.href}>
-						<h3>{blog.title}</h3>
-						<p>{blog.desc}</p>
+	<div class="blogs">
+		{#each blogs as blog}
+			<article class="blog">
+				<a href={blog.href}>
+					<h3>{blog.title}</h3>
+					<p>{blog.desc}</p>
 
-						<!-- <p>Created on <datetime /> -->
-					</a>
-				</article>
-			{/each}
-		</div>
+					<!-- <p>Created on <datetime /> -->
+				</a>
+			</article>
+		{/each}
 	</div>
 </div>
 
-<style lang="scss">
-	h2 {
-		text-align: center;
-		font-weight: 700;
-		font-size: 1.5rem;
-		margin-bottom: 2rem;
-	}
+<Chess />
 
+<style lang="scss">
 	.projects {
 		display: grid;
 		gap: 2rem;

@@ -28,6 +28,7 @@
 		"chnobli": "^0.1.10",
 		"chnobli-svelte": "^0.1.0",
 		"chuchi": "^0.1",
+		"chuchi-legacy": "^1.1.0",
 		"highlight.js": "^11.9.0",
 		"ogl": "^1.0.6"
 	}
