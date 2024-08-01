@@ -1,4 +1,5 @@
 mod api;
+mod chess;
 mod cors;
 mod ui;
 

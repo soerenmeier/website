@@ -1,5 +1,11 @@
 import Sprite from '@/lib/Sprite';
-import { XYToIndex, indexToSquare, indexToXY, squareToIndex } from './data';
+import {
+	Board,
+	XYToIndex,
+	indexToSquare,
+	indexToXY,
+	squareToIndex,
+} from './data';
 // import { availableMoves } from './api/api.js';
 import { range } from 'chuchi-utils';
 import Listeners from 'chuchi-utils/sync/Listeners';
@@ -9,7 +15,7 @@ import type Context2d from 'chuchi-legacy/dom/Context2d';
 
 const pieceSprite = new Sprite(pieceSpriteSvg, 45, 45);
 
-const pieceSpriteLookup = {
+const pieceSpriteLookup: Record<string, [number, number]> = {
 	WhiteKing: [0, 0],
 	WhiteQueen: [1, 0],
 	WhiteBishop: [2, 0],
@@ -28,8 +34,8 @@ const pieceSpriteLookup = {
 
 export default class BoardView {
 	ctx: Context2d;
-	board: Board | null;
-	availableMoves: number[] | null;
+	board: Board;
+	availableMoves: null;
 	squareWidth: number;
 
 	holdingPiece: number | null;
@@ -41,11 +47,11 @@ export default class BoardView {
 	drawWidth: number;
 	drawPadding: number;
 
-	moveListeners: Listeners;
+	moveListeners: Listeners<[['Piece' | 'Duck', string]]>;
 
 	constructor(ctx: Context2d) {
 		this.ctx = ctx;
-		this.board = null;
+		this.board = null as any;
 		this.availableMoves = null;
 		this.squareWidth = ctx.width / 8;
 
@@ -65,7 +71,7 @@ export default class BoardView {
 	}
 
 	// fn(x, y, i)
-	loopSquare(fn) {
+	loopSquare(fn: (x: number, y: number, i: number) => void) {
 		for (let y = 0; y < 8; y++) {
 			for (let x = 0; x < 8; x++) {
 				fn(x, y, XYToIndex(x, y));
@@ -73,7 +79,7 @@ export default class BoardView {
 		}
 	}
 
-	async updateBoard(board) {
+	async updateBoard(board: Board) {
 		this.board = board;
 		this.availableMoves = null;
 		this.holdingPiece = null;
@@ -81,7 +87,8 @@ export default class BoardView {
 		this.selectedPiece = null;
 		this.moveToHint = range(0, 64).map(() => false);
 
-		this.availableMoves = await availableMoves(board);
+		// todo avaiablemoves should come from wasm or just from websocket?
+		// this.availableMoves = await availableMoves(board);
 
 		if (board.movedPiece) {
 			const foundDuck = board.duckPosition();
@@ -96,11 +103,16 @@ export default class BoardView {
 	}
 
 	// fn([kind, move])
-	onMove(fn) {
+	onMove(fn: ([kind, move]: ['Piece' | 'Duck', string]) => void) {
 		return this.moveListeners.add(fn);
 	}
 
-	drawPieceReal(piece, side, x, y) {
+	drawPieceReal(
+		piece: string,
+		side: 'White' | 'Black',
+		x: number,
+		y: number,
+	) {
 		const [sX, sY] = pieceSpriteLookup[side + piece];
 		pieceSprite.draw(
 			sX,

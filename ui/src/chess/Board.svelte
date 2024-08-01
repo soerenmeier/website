@@ -2,13 +2,14 @@
 	import { timeout } from 'chuchi-utils';
 	import Context2d from 'chuchi-legacy/dom/Context2d';
 	import BoardView from './BoardView';
+	import { Board } from './data';
 	// import { applyMove } from './api/api.js';
 
 	// should be a Board (see api)
 	// export let board;
-	let { board: Board } = $props();
+	let { board }: { board: Board } = $props();
 
-	let view: BoardView;
+	let view: BoardView = $state(null as any);
 	let canvas: HTMLCanvasElement;
 
 	async function newCanvas(el: HTMLCanvasElement) {
@@ -19,7 +20,7 @@
 		view = new BoardView(ctx);
 
 		view.onMove(async ([kind, move]) => {
-			board = await applyMove(kind, move, view.board);
+			// board = await applyMove(kind, move, view.board);
 		});
 
 		// load sprite
@@ -30,7 +31,9 @@
 		requestAnimationFrame(draw);
 	}
 
-	$: view ? view.updateBoard(board) : [];
+	$effect(() => {
+		if (view) view.updateBoard(board);
+	});
 
 	function draw() {
 		view.draw();
@@ -42,10 +45,10 @@
 	let mouseDown = false;
 
 	// might return [null, null] if the xy is invalid
-	function getMouseCanvasXY(ev) {
+	function getMouseCanvasXY(ev: any) {
 		const offset = canvas.getBoundingClientRect();
-		let x = ev.clientX - offset.left;
-		let y = ev.clientY - offset.top;
+		let x: number | null = ev.clientX - offset.left;
+		let y: number | null = ev.clientY - offset.top;
 
 		if (x > offset.width || y > offset.height) {
 			x = null;
@@ -55,21 +58,21 @@
 		return [x, y];
 	}
 
-	function onMouseDown(e) {
+	function onMouseDown(e: any) {
 		mouseDown = true;
 		const [x, y] = getMouseCanvasXY(e);
 
 		if (x !== null) view.mouseDown(x, y);
 	}
 
-	function onMouseUp(e) {
+	function onMouseUp(e: any) {
 		mouseDown = false;
 		const [x, y] = getMouseCanvasXY(e);
 
 		if (x !== null) view.mouseUp(x, y);
 	}
 
-	function onMouseMove(e) {
+	function onMouseMove(e: any) {
 		if (!mouseDown) return;
 
 		const [x, y] = getMouseCanvasXY(e);
@@ -80,4 +83,4 @@
 
 <svelte:window on:mousemove={onMouseMove} on:mouseup={onMouseUp} />
 
-<canvas id="canvas" use:newCanvas on:mousedown={onMouseDown} />
+<canvas id="canvas" use:newCanvas onmousedown={onMouseDown}></canvas>
