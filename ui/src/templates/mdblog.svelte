@@ -1,8 +1,7 @@
 <script>
 	import Blog from '@/layout/blog.svelte';
 
-	export let html;
-	export let attributes;
+	let { html, attributes } = $props();
 </script>
 
 <Blog title={attributes.title} desc={attributes.description}>

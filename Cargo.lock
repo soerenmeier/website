@@ -312,6 +312,82 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
+name = "chuchi"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "227e91420e5680f9e80625d5079697c4edbe24c3e5ebe4cb4b1b5ae937b65aba"
+dependencies = [
+ "byte-parser",
+ "bytes",
+ "chuchi-codegen",
+ "chuchi-core",
+ "hyper",
+ "hyper-util",
+ "matchit",
+ "percent-encoding",
+ "rand",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "chuchi-codegen"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "87202e8cfae5757c200c4d845e207b2ff44d6a6c6c3381c57f74f01a1baa6b0d"
+dependencies = [
+ "proc-macro-crate",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.60",
+]
+
+[[package]]
+name = "chuchi-core"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e292418c59c6884e41331db65284a6637b0e99817f62636513359a5f2fc51b0c"
+dependencies = [
+ "bytes",
+ "form_urlencoded",
+ "futures-core",
+ "http",
+ "hyper",
+ "percent-encoding",
+ "pin-project-lite",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-stream",
+ "tokio-util",
+]
+
+[[package]]
+name = "chuchi-ssr"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2800528be4e20bd58dc98557db5bc8a923522067ede2b4ad95ae68057d5191c9"
+dependencies = [
+ "aho-corasick",
+ "chuchi",
+ "deno_console",
+ "deno_core",
+ "deno_crypto",
+ "deno_url",
+ "deno_web",
+ "deno_webidl",
+ "flume",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
 name = "cipher"
 version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -762,82 +838,6 @@ name = "fiat-crypto"
 version = "0.2.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "38793c55593b33412e3ae40c2c9781ffaa6f438f6f8c10f24e71846fbd7ae01e"
-
-[[package]]
-name = "fire-http"
-version = "0.5.0-beta.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38cbd1626a4e5c1d32d69fbcfece20d833b2fc7a371fcc5b61b55ac121a987cc"
-dependencies = [
- "byte-parser",
- "bytes",
- "fire-http-codegen",
- "fire-http-representation",
- "hyper",
- "hyper-util",
- "matchit",
- "percent-encoding",
- "rand",
- "serde",
- "serde_json",
- "thiserror",
- "tokio",
- "tracing",
-]
-
-[[package]]
-name = "fire-http-codegen"
-version = "0.3.0-alpha.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0d52ece048db24f38baccee8e54caf62955d107ac35cdc574dc78b2f9c415ac"
-dependencies = [
- "proc-macro-crate",
- "proc-macro2",
- "quote",
- "syn 2.0.60",
-]
-
-[[package]]
-name = "fire-http-representation"
-version = "0.4.0-beta.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f5a0831deb054ffbe7f0b60a5959a0d31558df4fdad1b519991c74be23b5a1cd"
-dependencies = [
- "bytes",
- "form_urlencoded",
- "futures-core",
- "http",
- "hyper",
- "percent-encoding",
- "pin-project-lite",
- "serde",
- "serde_json",
- "tokio",
- "tokio-stream",
- "tokio-util",
-]
-
-[[package]]
-name = "fire-ssr"
-version = "0.2.0-alpha.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9e40b6125ad83e99e59ae24b32b4867a043dd1b0c748561a11d2ac102a792c8c"
-dependencies = [
- "aho-corasick",
- "deno_console",
- "deno_core",
- "deno_crypto",
- "deno_url",
- "deno_web",
- "deno_webidl",
- "fire-http",
- "flume",
- "reqwest",
- "serde",
- "serde_json",
- "tokio",
- "tracing",
-]
 
 [[package]]
 name = "flate2"
@@ -2198,9 +2198,9 @@ dependencies = [
 name = "server"
 version = "0.1.0"
 dependencies = [
+ "chuchi",
+ "chuchi-ssr",
  "clap",
- "fire-http",
- "fire-ssr",
  "serde",
  "serde_json",
  "tokio",

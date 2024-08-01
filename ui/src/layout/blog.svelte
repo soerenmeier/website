@@ -18,8 +18,7 @@
 	hljs.registerLanguage('yaml', yaml);
 	hljs.addPlugin(highlightCopy());
 
-	export let title;
-	export let desc;
+	let { title, desc } = $props();
 
 	function onBack() {
 		router.back();
@@ -37,43 +36,33 @@
 
 <div id="blog">
 	<div class="back">
-		<div class="ctn-cont">
-			{#if router.canGoBack($currentRequest)}
-				<button on:click={onBack}>Back</button>
-			{:else}
-				<a href="/">Go Home</a>
-			{/if}
-		</div>
+		{#if router.canGoBack($currentRequest)}
+			<button on:click={onBack}>Back</button>
+		{:else}
+			<a href="/">Go Home</a>
+		{/if}
 	</div>
 
 	<div class="intro">
-		<div class="ctn-cont">
-			<h1>{title}</h1>
-		</div>
+		<h1>{title}</h1>
 	</div>
 
-	<div class="ctn">
-		<div class="ctn-cont">
-			<slot />
-		</div>
+	<div class="ctn box">
+		<slot />
 	</div>
 </div>
 
 <style lang="scss">
-	#blog {
-		min-height: 100vh;
-		min-height: 100svh;
-		background-color: var(--bg-dark-400);
-		color: white;
-	}
-
 	.back {
 		position: absolute;
 		top: 1rem;
+		width: 100%;
 		z-index: 1;
 
 		button,
 		a {
+			display: block;
+			margin: 0 auto;
 			appearance: none;
 			border: none;
 			border-radius: 0;
@@ -91,25 +80,10 @@
 	}
 
 	.intro {
-		position: relative;
-		// min-height: 20vh;
+		max-width: 740px;
+		margin: 0 auto;
 		padding: 10rem 0 8rem;
-
-		background: radial-gradient(
-			circle at center top,
-			#424291,
-			var(--bg-dark-400)
-		);
-
-		&::after {
-			content: '';
-			position: absolute;
-			left: 0;
-			bottom: 0;
-			width: 100%;
-			height: 5rem;
-			background: linear-gradient(transparent, var(--bg-dark-400));
-		}
+		text-align: center;
 	}
 
 	h1 {
@@ -119,17 +93,8 @@
 	}
 
 	.ctn :global {
-		padding-top: 5rem;
-		padding-bottom: 2rem;
-
-		h2,
-		h3,
-		p {
-			max-width: 50rem;
-		}
-
 		h2 {
-			font-size: 1.8rem;
+			font-size: 1.5rem;
 			line-height: 1.2;
 			font-weight: 600;
 			margin-top: 2.5rem;

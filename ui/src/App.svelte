@@ -1,12 +1,20 @@
 <script>
-	import './app.scss';
+	import Background from './components/Background.svelte';
 
-	export let component;
-	export let props;
+	import './app.scss';
+	import Footer from './components/Footer.svelte';
+
+	const { page } = $props();
 </script>
 
+<Background />
+
 <main>
-	{#key component}
-		<svelte:component this={component} {...props} />
-	{/key}
+	<!-- {#key component} -->
+	<svelte:component this={$page.component} {...$page.props} />
+	<!-- {/key} -->
 </main>
+
+{#if !$page.hideFooter}
+	<Footer />
+{/if}

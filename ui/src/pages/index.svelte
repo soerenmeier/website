@@ -41,7 +41,12 @@
 
 	const projects = [
 		{
-			title: 'Chnobli - the best animation library (WIP)',
+			title: 'Chuchi',
+			desc: 'Libraries for http or encrypted tcp communication in rust and routing and other utilities in javascript.',
+			href: 'http://chuchi.com',
+		},
+		{
+			title: 'Chnobli - the best animation library :P (WIP)',
 			desc: "Chnobli is garlic in swiss german. It's my attempt at an animation library.",
 			href: 'https://chnobli.com',
 		},
@@ -65,11 +70,6 @@
 			desc: 'My home server application allowing to stream movies and store password.',
 			href: 'https://github.com/soerenmeier/alpenwind',
 		},
-		{
-			title: 'Fire Lib',
-			desc: 'Libraries for http or encrypted tcp communication in rust and routing and other utilities in javascript.',
-			href: 'http://fire-lib.com',
-		},
 	];
 </script>
 
@@ -83,30 +83,28 @@
 
 <Intro />
 
-<div class="pojects listing">
-	<div class="ctn-cont">
-		<h2>Projects</h2>
+<div class="box">
+	<h2>Projects</h2>
 
-		<div class="list">
-			{#each projects as projects}
-				<article>
-					<a href={projects.href}>
-						<h3>{projects.title}</h3>
-						<p>{projects.desc}</p>
-					</a>
-				</article>
-			{/each}
-		</div>
+	<div class="projects">
+		{#each projects as projects}
+			<article class="project">
+				<a href={projects.href}>
+					<h3>{projects.title}</h3>
+					<p>{projects.desc}</p>
+				</a>
+			</article>
+		{/each}
 	</div>
 </div>
 
-<div class="blog listing">
+<div class="box my-section">
 	<div class="ctn-cont">
 		<h2>Blog / Guides</h2>
 
-		<div class="list">
+		<div class="blogs">
 			{#each blogs as blog}
-				<article>
+				<article class="blog">
 					<a href={blog.href}>
 						<h3>{blog.title}</h3>
 						<p>{blog.desc}</p>
@@ -119,86 +117,76 @@
 	</div>
 </div>
 
-<footer>
-	<div class="ctn-cont">
-		<p>Working at <a href="https://dunkel.cc">Dunkel</a>.</p>
-	</div>
-</footer>
-
 <style lang="scss">
-	.listing {
-		padding-top: 10rem;
-		background-color: var(--bg-dark-400);
-		color: white;
-
-		h2 {
-			font-size: 4rem;
-			line-height: 1.2;
-			font-weight: 600;
-			margin-bottom: 4rem;
-		}
-
-		.list {
-			max-width: 600px;
-		}
-
-		article {
-			margin-bottom: 1rem;
-			border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-
-			&:last-child {
-				margin-bottom: 0;
-			}
-
-			a {
-				display: block;
-				padding-bottom: 0.5rem;
-				color: inherit;
-				text-decoration: none;
-				transition: opacity 0.3s ease;
-
-				&:hover {
-					opacity: 0.7;
-				}
-			}
-
-			h3 {
-				font-size: 1.5rem;
-				line-height: 1.2;
-				font-weight: 600;
-				color: #c5c5c5;
-				margin-bottom: 0.1rem;
-			}
-
-			p {
-				color: #818181;
-			}
-		}
+	h2 {
+		text-align: center;
+		font-weight: 700;
+		font-size: 1.5rem;
+		margin-bottom: 2rem;
 	}
 
-	footer {
-		padding-top: 8rem;
-		padding-bottom: 1rem;
-		background-color: var(--bg-dark-400);
-		color: white;
+	.projects {
+		display: grid;
+		gap: 2rem;
+	}
 
+	.project {
 		a {
+			display: block;
 			text-decoration: none;
-			font-weight: bold;
 			color: inherit;
+			padding: 1rem;
+			height: 100%;
+			border: 1px solid var(--white-40);
+			/* border-bottom: 1px solid var(--white-60); */
+			box-shadow: 2px 2px 0 var(--white-40);
+
+			&:hover {
+				transform: translate(-1px, -1px);
+				box-shadow: 3px 3px 0 var(--white-40);
+			}
+		}
+
+		h3 {
+			font-weight: 700;
+			/* color: var(--white-60); */
+			letter-spacing: 0.02rem;
+		}
+
+		p {
+			color: var(--white-60);
 		}
 	}
 
-	@media (max-width: 600px) {
-		.blog {
-			h2 {
-				font-size: 2.5rem;
-				margin-bottom: 3rem;
-			}
+	.blogs {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
 
-			article h3 {
-				font-size: 1.4rem;
+	.blog {
+		a {
+			display: block;
+			text-decoration: none;
+			color: inherit;
+			// border-bottom: 1px solid var(--white-40);
+
+			&:hover {
+				transform: translateX(2px);
 			}
+		}
+
+		h3 {
+			font-weight: 700;
+			letter-spacing: 0.02rem;
+			text-decoration: underline;
+			text-underline-offset: 0.2rem;
+		}
+	}
+
+	@media (min-width: 740px) {
+		.projects {
+			grid-template-columns: 1fr 1fr;
 		}
 	}
 </style>

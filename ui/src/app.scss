@@ -1,7 +1,12 @@
 @import './css/typo.scss';
 
 :root {
-	--bg-dark-400: hsl(212, 8%, 7%);
+	--white: rgb(255 255 255);
+	--white-80: rgb(255 255 255 / 80%);
+	--white-60: rgb(255 255 255 / 60%);
+	--white-40: rgb(255 255 255 / 40%);
+	--white-20: rgb(255 255 255 / 20%);
+	--white-10: rgb(255 255 255 / 10%);
 }
 
 * {
@@ -15,19 +20,39 @@
 
 html {
 	font-family: 'silka', serif;
-	font-size: 16px;
+	// font-size: 16px;
 	line-height: 1.5;
 }
 
-.ctn-cont {
-	width: 100%;
-	max-width: 1136px;
-	margin-left: auto;
-	margin-right: auto;
-	padding-left: 2rem;
-	padding-right: 2rem;
+body {
+	background-color: black;
+	color: var(--white-80);
 }
 
-.rt {
-	max-width: 700px;
+::selection {
+	background-color: white;
+	color: black;
+}
+
+.box {
+	max-width: 740px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 2rem 1rem;
+	background-color: black;
+	border-top: 1px solid var(--white-10);
+	border-bottom: 1px solid var(--white-10);
+}
+
+.my-section {
+	margin-top: 6rem;
+	margin-bottom: 6rem;
+}
+
+@media (min-width: 740px) {
+	.box {
+		border: 1px solid var(--white-10);
+		border-radius: 0.5rem;
+		padding: 2rem;
+	}
 }

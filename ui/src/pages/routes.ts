@@ -1,4 +1,4 @@
-import Router from 'fire-svelte/routing/Router';
+import type { Router } from 'chuchi';
 import NotFound from './notfound.svelte';
 import { register as registerBlogs } from '@/blog/routes';
 

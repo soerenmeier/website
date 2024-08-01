@@ -1,7 +1,6 @@
-import type Request from 'fire-svelte/routing/Request';
-import type Route from 'fire-svelte/routing/Route';
+import type { Route, Request } from 'chuchi';
 import * as routes from './pages/routes';
-import type SsrCache from 'fire-svelte/ssr/SsrCache';
+import type { SsrCache } from 'chuchi/ssr';
 
 // should return { status, props }
 export async function handleRoute(
@@ -21,16 +20,17 @@ export async function handleRoute(
 			console.log('error', e);
 			return {
 				status: 500,
-				props: {
+				page: {
 					component: routes.NotFound,
 					props: {},
+					// hideFooter: true,
 				},
 			};
 		}
 
 		return {
 			status: 200,
-			props: {
+			page: {
 				component: comp.default,
 				props: pageProps,
 			},
@@ -39,9 +39,10 @@ export async function handleRoute(
 
 	return {
 		status: 404,
-		props: {
+		page: {
 			component: routes.NotFound,
 			props: {},
+			hideFooter: true,
 		},
 	};
 }

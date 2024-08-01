@@ -24,7 +24,6 @@
 	let cont: HTMLElement;
 	let renderer: Renderer;
 	let gl: OGLRenderingContext;
-	// let camera: Camera;
 	let scene: Transform;
 	let geometry: Geometry;
 	let program: Program;
@@ -53,11 +52,15 @@
 		renderer.render({ scene: mesh });
 	}
 
+	function getSize(): [number, number] {
+		return [window.innerWidth, window.innerHeight];
+
+		// use the container size
+		// return [cont.clientWidth, cont.clientHeight];
+	}
+
 	function onResize() {
-		renderer.setSize(window.innerWidth, window.innerHeight);
-		// camera.perspective({
-		// 	aspect: window.innerWidth / window.innerHeight,
-		// });
+		renderer.setSize(...getSize());
 
 		if (program) {
 			program.uniforms.uResolution.value = [
@@ -107,30 +110,9 @@
 			uniforms: {
 				uTime: { value: 0 },
 
-				// // rgba(30, 75, 107, 1)
-				// blue: { value: new Color(30 / 255, 75 / 255, 107 / 255) },
-
-				// // rgba(176, 215, 238, 1)
-				// light_blue: {
-				// 	value: new Color(176 / 255, 215 / 255, 238 / 255),
-				// },
-
-				// // rgba(16, 33, 57, 1)
-				// dark: { value: new Color(16 / 255, 33 / 255, 57 / 255) },
-
-				// // rgba(255, 231, 103, 1)
-				// gold: { value: new Color(255 / 255, 231 / 255, 103 / 255) },
-
-				// rgba(178, 153, 103, 1)
-				light: { value: new Color(178 / 255, 153 / 255, 103 / 255) },
-
-				// rgba(79, 70, 57, 1)
-				medium: { value: new Color(79 / 255, 70 / 255, 57 / 255) },
-
-				// rgba(35, 34, 32, 1)
-				dark: { value: new Color(35 / 255, 34 / 255, 32 / 255) },
-
-				uResolution: { value: [window.innerWidth, window.innerHeight] },
+				uResolution: { value: getSize() },
+				uDirection: { value: [0, 0] },
+				intensity: { value: 0.5 },
 			},
 		});
 
@@ -145,9 +127,13 @@
 <div bind:this={cont}></div>
 
 <style lang="scss">
-	canvas {
+	div {
+		position: fixed;
+		top: 0;
+		left: 0;
 		width: 100%;
 		height: 100%;
-		opacity: 0.05;
+		z-index: -1;
+		background-color: black;
 	}
 </style>
