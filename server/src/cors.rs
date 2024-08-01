@@ -1,11 +1,11 @@
-use fire::header::{
+use chuchi::header::{
 	Method, ACCESS_CONTROL_ALLOW_HEADERS, ACCESS_CONTROL_ALLOW_METHODS,
 	ACCESS_CONTROL_ALLOW_ORIGIN, X_XSS_PROTECTION,
 };
-use fire::header::{RequestHeader, ResponseHeader, StatusCode};
-use fire::routes::Catcher;
-use fire::util::PinnedFuture;
-use fire::{resources::Resources, Request, Response};
+use chuchi::header::{RequestHeader, ResponseHeader, StatusCode};
+use chuchi::routes::Catcher;
+use chuchi::util::PinnedFuture;
+use chuchi::{resources::Resources, Request, Response};
 
 pub struct CorsHeaders;
 
@@ -19,7 +19,7 @@ impl Catcher for CorsHeaders {
 		req: &'a mut Request,
 		res: &'a mut Response,
 		_data: &'a Resources,
-	) -> PinnedFuture<'a, fire::Result<()>> {
+	) -> PinnedFuture<'a, chuchi::Result<()>> {
 		let values = &mut res.header.values;
 
 		// if we have a options request this means we need to

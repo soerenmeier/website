@@ -12,6 +12,7 @@
 	const router = getContext('router');
 	const currentRequest = router.currentRequest;
 
+	// todo if we would the hljs in onMount we might improve perf
 	hljs.registerLanguage('javascript', javascript);
 	hljs.registerLanguage('rust', rust);
 	hljs.registerLanguage('bash', bash);
@@ -55,14 +56,15 @@
 <style lang="scss">
 	.back {
 		position: absolute;
+		display: flex;
 		top: 1rem;
 		width: 100%;
 		z-index: 1;
+		justify-content: center;
 
 		button,
 		a {
 			display: block;
-			margin: 0 auto;
 			appearance: none;
 			border: none;
 			border-radius: 0;

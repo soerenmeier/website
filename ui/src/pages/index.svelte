@@ -43,7 +43,7 @@
 		{
 			title: 'Chuchi',
 			desc: 'Libraries for http or encrypted tcp communication in rust and routing and other utilities in javascript.',
-			href: 'http://chuchi.com',
+			href: 'http://chuchi.dev',
 		},
 		{
 			title: 'Chnobli - the best animation library :P (WIP)',
