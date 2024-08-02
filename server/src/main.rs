@@ -5,6 +5,7 @@ mod ui;
 
 use std::fs;
 
+use chess::chess::ChessSubscriber;
 use chuchi::Resource;
 use clap::Parser;
 use serde::Deserialize;
@@ -48,8 +49,11 @@ async fn main() {
 		.expect("Address could not be parsed");
 
 	server.add_resource(cfg);
+	let (chess, chess_task) = ChessSubscriber::new();
+	server.add_resource(chess);
 
 	api::routes(&mut server);
+	chess::routes(&mut server);
 	info!("using ui dir {UI_DIR}");
 	let js_server = ui::routes(UI_DIR.to_string(), &mut server);
 
@@ -60,5 +64,9 @@ async fn main() {
 
 	let server = server.build().await.unwrap();
 	js_server.route_internally(server.shared()).await;
-	server.run().await.unwrap();
+	tokio::try_join!(
+		tokio::spawn(async move { server.run().await.unwrap() }),
+		chess_task
+	)
+	.unwrap();
 }

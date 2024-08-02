@@ -1,4 +1,4 @@
-use crate::types::{Board, PieceKind, Square};
+use crate::chess::types::{Board, PieceKind, Square};
 
 // evaluate_board_in_pool
 
