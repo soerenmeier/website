@@ -44,3 +44,15 @@ pub fn available_moves(board: JsValue) -> JsValue {
 
     to_value(&av).unwrap()
 }
+
+#[wasm_bindgen]
+pub fn move_piece(board: JsValue, piece: JsValue) -> JsValue {
+    let board: Board = from_value(board).unwrap();
+    let piece: PieceMove = from_value(piece).unwrap();
+
+    let mut computed = ComputedBoard::from_board(board);
+
+    computed.apply_piece_move(piece);
+
+    to_value(computed.board()).unwrap()
+}

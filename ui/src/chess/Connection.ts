@@ -1,6 +1,5 @@
 import { Writable } from 'chuchi/stores';
-import { Board } from './types';
-import Listeners from 'chuchi-utils/sync/Listeners';
+import { Board, History, Move } from './types';
 
 export type Receive =
 	| {
@@ -13,7 +12,7 @@ export type Receive =
 	  }
 	| {
 			kind: 'History';
-			history: unknown;
+			history: History;
 	  }
 	| {
 			kind: 'NewHistoryMove';
@@ -30,14 +29,23 @@ export type Receive =
 			kind: 'WrongMove';
 	  };
 
+export type Send = {
+	kind: 'MakeMove';
+	name: string;
+	moveNumber: number;
+	move: Move;
+};
+
 export default class Connection {
 	ws!: WebSocket;
 	id!: string;
 
 	board: Writable<Board>;
+	history: Writable<History>;
 
 	constructor() {
 		this.board = new Writable(null as any);
+		this.history = new Writable(null as any);
 	}
 
 	connect() {
@@ -51,6 +59,17 @@ export default class Connection {
 
 	disconnect() {
 		this.ws.close();
+	}
+
+	makeMove(name: string, moveNumber: number, move: Move) {
+		const send: Send = {
+			kind: 'MakeMove',
+			name,
+			moveNumber,
+			move,
+		};
+
+		this.ws.send(JSON.stringify(send));
 	}
 
 	private onOpen(e: Event) {
@@ -70,6 +89,10 @@ export default class Connection {
 			case 'Board':
 				recv.board = new Board(recv.board);
 				this.board.set(recv.board);
+				break;
+			case 'History':
+				recv.history = new History(recv.history);
+				this.history.set(recv.history);
 				break;
 		}
 

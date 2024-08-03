@@ -1,5 +1,6 @@
 // import Data from 'fire/data/data.js';
 // import { Option } from 'fire/data/parsetypes.js';
+import DateTime from 'chuchi-legacy/time/DateTime';
 import { range } from 'chuchi-utils';
 
 export class Board {
@@ -121,6 +122,15 @@ export class Move {
 		this.duck = d.duck;
 		this.side = d.side;
 	}
+
+	static new(piece: PieceMove, duck: string, side: string): Move {
+		const move = Object.create(this.prototype);
+		move.piece = piece;
+		move.duck = duck;
+		move.side = side;
+
+		return move;
+	}
 }
 
 // prettier-ignore
@@ -149,4 +159,25 @@ export function indexToXY(index: number): [number, number] {
 
 export function XYToIndex(x: number, y: number): number {
 	return y * 8 + x;
+}
+
+export class History {
+	moves: HistoryMove[];
+
+	constructor(d: any) {
+		this.moves = d.moves.map((m: any) => new HistoryMove(m));
+	}
+}
+
+export class HistoryMove {
+	conId!: string;
+	name!: string;
+	move: Move;
+	time: DateTime;
+
+	constructor(d: any) {
+		Object.assign(this, d);
+		this.move = new Move(d.move);
+		this.time = new DateTime(d.time);
+	}
 }

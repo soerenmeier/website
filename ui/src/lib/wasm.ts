@@ -1,5 +1,5 @@
-import { PieceMove, type Board } from '@/chess/types.js';
-import init, { available_moves } from '../../../wasm/js/wasm.js';
+import { Board, PieceMove } from '@/chess/types.js';
+import init, { available_moves, move_piece } from '../../../wasm/js/wasm.js';
 
 export type AvailableMoves =
 	| { kind: 'Piece'; moves: PieceMove[] }
@@ -18,6 +18,13 @@ export class Wasm {
 		}
 
 		return moves;
+	}
+
+	movePiece(board: Board, move: PieceMove): Board {
+		board = move_piece(board, move.toJSON());
+		board = new Board(board);
+
+		return board;
 	}
 }
 

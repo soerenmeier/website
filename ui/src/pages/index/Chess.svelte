@@ -2,11 +2,12 @@
 	import { onMount } from 'svelte';
 	import { load } from '@/lib/wasm';
 	import Connection from '@/chess/Connection';
-	import { Board } from '@/chess/types';
+	import { Board, Move } from '@/chess/types';
 	import BoardComp from '@/chess/Board.svelte';
 
 	const conn = new Connection();
 	const board = conn.board;
+	const history = conn.history;
 	let wasm = $state();
 
 	console.log('board', board);
@@ -15,8 +16,13 @@
 	// find out
 
 	$effect(() => {
-		console.log('new board', $board);
+		console.log('new board or history', $board, $history);
 	});
+
+	function onMove(move: Move) {
+		// make move
+		console.log('make move', move);
+	}
 
 	onMount(() => {
 		conn.connect();
@@ -39,6 +45,6 @@
 	</p>
 
 	{#if $board && wasm}
-		<BoardComp board={$board} {wasm} />
+		<BoardComp board={$board} {wasm} onmove={onMove} />
 	{/if}
 </div>

@@ -1,6 +1,7 @@
 import Sprite from '@/lib/Sprite';
 import {
 	Board,
+	Move,
 	PieceMove,
 	XYToIndex,
 	indexToSquare,
@@ -40,6 +41,7 @@ export default class BoardView {
 	wasm: Wasm;
 	availableMoves: AvailableMoves;
 	squareWidth: number;
+	activeMove: { piece: PieceMove | null; duck: string | null };
 
 	holdingPiece: number | null;
 	holdingPieceRealXY: [number, number] | null;
@@ -50,7 +52,7 @@ export default class BoardView {
 	drawWidth: number;
 	drawPadding: number;
 
-	moveListeners: Listeners<[['Piece' | 'Duck', string]]>;
+	moveListeners: Listeners<[Move]>;
 
 	constructor(ctx: Context2d, wasm: Wasm) {
 		this.ctx = ctx;
@@ -58,6 +60,7 @@ export default class BoardView {
 		this.wasm = wasm;
 		this.availableMoves = null as any;
 		this.squareWidth = ctx.width / 8;
+		this.activeMove = { piece: null, duck: null };
 
 		// contains the index of the piece that is holded
 		this.holdingPiece = null;
@@ -83,9 +86,12 @@ export default class BoardView {
 		}
 	}
 
-	async updateBoard(board: Board) {
+	async updateBoard(board: Board, reset: boolean = true) {
 		this.board = board;
 		this.availableMoves = this.wasm.availableMoves(board);
+		if (reset) {
+			this.activeMove = { piece: null, duck: null };
+		}
 		this.holdingPiece = null;
 		this.holdingPieceRealXY = null;
 		this.selectedPiece = null;
@@ -107,8 +113,7 @@ export default class BoardView {
 		}
 	}
 
-	// fn([kind, move])
-	onMove(fn: ([kind, move]: ['Piece' | 'Duck', string]) => void) {
+	onMove(fn: (move: Move) => void) {
 		return this.moveListeners.add(fn);
 	}
 
@@ -277,12 +282,20 @@ export default class BoardView {
 
 				if (move) {
 					// a piece move means we do the calculation locally
-					const newBoard = this.wasm.movePiece(move);
-					// this.moveListeners.trigger(['Piece', move]);
+					const newBoard = this.wasm.movePiece(this.board, move);
+					this.activeMove.piece = move;
+					this.updateBoard(newBoard, false);
 				}
 				break;
 			case 'Duck':
-				this.moveListeners.trigger(['Duck', indexToSquare(index)]);
+				this.activeMove.duck = indexToSquare(index);
+				const mov = Move.new(
+					this.activeMove.piece!,
+					this.activeMove.duck,
+					this.board.nextMove,
+				);
+
+				this.moveListeners.trigger(mov);
 				break;
 		}
 	}

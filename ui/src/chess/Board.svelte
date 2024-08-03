@@ -2,13 +2,17 @@
 	import { timeout } from 'chuchi-utils';
 	import Context2d from 'chuchi-legacy/dom/Context2d';
 	import BoardView from './BoardView';
-	import { Board } from './types';
+	import { Board, Move } from './types';
 	import type { Wasm } from '@/lib/wasm';
 	// import { applyMove } from './api/api.js';
 
 	// should be a Board (see api)
 	// export let board;
-	let { board, wasm }: { board: Board; wasm: Wasm } = $props();
+	let {
+		board,
+		wasm,
+		onmove,
+	}: { board: Board; wasm: Wasm; onmove: (move: Move) => void } = $props();
 
 	let view: BoardView = $state(null as any);
 	let canvas: HTMLCanvasElement;
@@ -20,10 +24,7 @@
 
 		view = new BoardView(ctx, wasm);
 
-		view.onMove(async ([kind, move]) => {
-			console.log('move', kind, move);
-			// board = await applyMove(kind, move, view.board);
-		});
+		view.onMove(onmove);
 
 		// load sprite
 		await timeout(300);
