@@ -12,7 +12,13 @@
 		board,
 		wasm,
 		onmove,
-	}: { board: Board; wasm: Wasm; onmove: (move: Move) => void } = $props();
+		playingSide,
+	}: {
+		board: Board;
+		wasm: Wasm;
+		onmove: (move: Move) => void;
+		playingSide: 'White' | 'Black';
+	} = $props();
 
 	let view: BoardView = $state(null as any);
 	let canvas: HTMLCanvasElement;
@@ -20,7 +26,8 @@
 	async function newCanvas(el: HTMLCanvasElement) {
 		canvas = el;
 		const ctx = new Context2d(el);
-		ctx.updateSize(600, 600);
+		// ctx.updateSize(600, 600);
+		ctx.updateSize();
 
 		view = new BoardView(ctx, wasm);
 
@@ -35,7 +42,10 @@
 	}
 
 	$effect(() => {
-		if (view) view.updateBoard(board);
+		if (!view) return;
+
+		view.updateBoard(board);
+		view.playingSide = playingSide;
 	});
 
 	function draw() {
@@ -87,3 +97,10 @@
 <svelte:window on:mousemove={onMouseMove} on:mouseup={onMouseUp} />
 
 <canvas id="canvas" use:newCanvas onmousedown={onMouseDown}></canvas>
+
+<style lang="scss">
+	canvas {
+		width: 100%;
+		height: 100%;
+	}
+</style>

@@ -16,17 +16,14 @@ use duck_chess::types::{Board, Move};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 enum Receive {
-	Hi {
+	Init {
 		id: UniqueId,
-	},
-	Board {
 		board: Board,
-	},
-	History {
 		history: History,
 	},
-	NewHistoryMove {
-		r#move: HistoryMove,
+	Update {
+		board: Board,
+		history: HistoryMove,
 	},
 	/// Get's returned if you moved in the previous turn
 	AlreadyMoved,
@@ -56,17 +53,13 @@ pub async fn ws_chess(
 	mut chess: Chess,
 ) -> Result<(), Error> {
 	let uid = UniqueId::new();
-	ws.serialize(&Receive::Hi { id: uid })
-		.await
-		.map_err(json_err_serv)?;
 
 	// the first step is to send the board and current standings
 	let state = chess.current_state();
 
-	ws.serialize(&Receive::Board { board: state.board })
-		.await
-		.map_err(json_err_serv)?;
-	ws.serialize(&Receive::History {
+	ws.serialize(&Receive::Init {
+		id: uid,
+		board: state.board,
 		history: state.history,
 	})
 	.await
@@ -79,7 +72,10 @@ pub async fn ws_chess(
 	loop {
 		tokio::select! {
 			msg = ws.deserialize::<Send>() => {
-				let msg = msg.map_err(json_err_client)?.unwrap();
+				let Some(msg) = msg.map_err(json_err_client)? else {
+					break Ok(())
+				};
+
 				match msg {
 					Send::MakeMove { name, move_number, r#move: mov} => {
 						let resp = chess.make_move(uid, name, move_number, mov).await;
@@ -109,14 +105,10 @@ pub async fn ws_chess(
 				let broadcast = broadcast.unwrap();
 				match broadcast {
 					Broadcast::NewMove { board, history } => {
-						ws.serialize(&Receive::Board { board })
-							.await
-							.map_err(json_err_serv)?;
-						ws.serialize(&Receive::NewHistoryMove { r#move: history })
+						ws.serialize(&Receive::Update { board, history })
 							.await
 							.map_err(json_err_serv)?;
 					}
-
 				}
 			}
 		}

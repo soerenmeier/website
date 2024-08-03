@@ -8,8 +8,10 @@
 		</p>
 
 		<div class="cta">
-			<a href="https://github.com/soerenmeier">Github</a>
-			<a href="https://twitter.com/soeren_meier">X</a>
+			<a class="btn-style" href="https://github.com/soerenmeier">
+				Github
+			</a>
+			<a class="btn-style" href="https://twitter.com/soeren_meier">X</a>
 		</div>
 	</div>
 </div>
@@ -53,27 +55,5 @@
 		justify-content: center;
 		margin-top: 2rem;
 		gap: 2rem;
-
-		a {
-			display: block;
-			padding: 0.5rem 1rem;
-			text-decoration: none;
-			color: var(--white-60);
-			font-weight: 700;
-			border: 1px solid currentColor;
-			box-shadow: 2px 2px 0 var(--white-60);
-
-			&:hover,
-			&:focus {
-				transform: translate(-1px, -1px);
-				box-shadow: 3px 3px 0;
-				outline: none;
-			}
-
-			&:active {
-				transform: translate(1px, 1px);
-				box-shadow: 1px 1px 0;
-			}
-		}
 	}
 </style>

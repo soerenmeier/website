@@ -38,7 +38,7 @@ export class Board {
 
 export class Piece {
 	kind!: string;
-	side!: string;
+	side!: 'White' | 'Black';
 
 	constructor(d: any) {
 		Object.assign(this, d);
@@ -153,11 +153,31 @@ export function indexToSquare(index: number): string {
 	return SQUARES[index];
 }
 
-export function indexToXY(index: number): [number, number] {
-	return [index % 8, Math.floor(index / 8)];
+// flipps the board, does it inplace
+export function flip(obj: [number, number]): [number, number] {
+	obj[0] = 7 - obj[0];
+	obj[1] = 7 - obj[1];
+	return obj as any;
 }
 
-export function XYToIndex(x: number, y: number): number {
+export function indexToXY(
+	index: number,
+	flipped: boolean = false,
+): [number, number] {
+	const obj: [number, number] = [index % 8, Math.floor(index / 8)];
+	if (flipped) flip(obj);
+
+	return obj;
+}
+
+export function XYToIndex(
+	x: number,
+	y: number,
+	flipped: boolean = false,
+): number {
+	if (flipped) {
+		[x, y] = flip([x, y]);
+	}
 	return y * 8 + x;
 }
 
@@ -166,6 +186,10 @@ export class History {
 
 	constructor(d: any) {
 		this.moves = d.moves.map((m: any) => new HistoryMove(m));
+	}
+
+	didConPlay(conId: string): boolean {
+		return this.moves.some(m => m.conId === conId);
 	}
 
 	cloneAdd(move: HistoryMove): History {

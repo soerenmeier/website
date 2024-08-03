@@ -3,20 +3,15 @@ import { Board, History, HistoryMove, Move } from './types';
 
 export type Receive =
 	| {
-			kind: 'Hi';
+			kind: 'Init';
 			id: string;
-	  }
-	| {
-			kind: 'Board';
 			board: Board;
-	  }
-	| {
-			kind: 'History';
 			history: History;
 	  }
 	| {
-			kind: 'NewHistoryMove';
-			move: HistoryMove;
+			kind: 'Update';
+			board: Board;
+			history: HistoryMove;
 	  }
 	| {
 			kind: 'AlreadyMoved';
@@ -83,20 +78,18 @@ export default class Connection {
 	private onMessage(e: MessageEvent) {
 		const recv: Receive = JSON.parse(e.data);
 		switch (recv.kind) {
-			case 'Hi':
+			case 'Init':
 				this.id = recv.id;
-				break;
-			case 'Board':
 				recv.board = new Board(recv.board);
-				this.board.set(recv.board);
-				break;
-			case 'History':
 				recv.history = new History(recv.history);
+				this.board.set(recv.board);
 				this.history.set(recv.history);
 				break;
-			case 'NewHistoryMove':
-				recv.move = new HistoryMove(recv.move);
-				this.history.set(this.history.get().cloneAdd(recv.move));
+			case 'Update':
+				recv.board = new Board(recv.board);
+				recv.history = new HistoryMove(recv.history);
+				this.board.set(recv.board);
+				this.history.set(this.history.get().cloneAdd(recv.history));
 				break;
 		}
 

@@ -4,6 +4,7 @@ import {
 	Move,
 	PieceMove,
 	XYToIndex,
+	flip,
 	indexToSquare,
 	indexToXY,
 	squareToIndex,
@@ -51,6 +52,7 @@ export default class BoardView {
 
 	drawWidth: number;
 	drawPadding: number;
+	playingSide: 'White' | 'Black';
 
 	moveListeners: Listeners<[Move]>;
 
@@ -73,6 +75,7 @@ export default class BoardView {
 		// piece drawing
 		this.drawWidth = this.squareWidth * 0.85;
 		this.drawPadding = (this.squareWidth - this.drawWidth) / 2;
+		this.playingSide = 'White';
 
 		this.moveListeners = new Listeners();
 	}
@@ -84,6 +87,10 @@ export default class BoardView {
 				fn(x, y, XYToIndex(x, y));
 			}
 		}
+	}
+
+	get flipped(): boolean {
+		return this.playingSide === 'Black';
 	}
 
 	async updateBoard(board: Board, reset: boolean = true) {
@@ -136,7 +143,10 @@ export default class BoardView {
 	}
 
 	// piece Rook | , side: white
-	drawPiece(piece, side, x, y) {
+	drawPiece(piece: string, side: 'White' | 'Black', x: number, y: number) {
+		if (this.flipped) {
+			[x, y] = flip([x, y]);
+		}
 		this.drawPieceReal(
 			piece,
 			side,
@@ -159,7 +169,9 @@ export default class BoardView {
 					this.squareWidth,
 				);
 			}
+		});
 
+		this.loopSquare((x, y, i) => {
 			const piece = this.board.getPiece(i);
 			if (piece && this.holdingPiece !== i)
 				this.drawPiece(piece.kind, piece.side, x, y);
@@ -169,7 +181,7 @@ export default class BoardView {
 			this.ctx.fillStyle = 'rgba(0, 0, 0, .2)';
 			this.moveToHint.forEach((showHint, i) => {
 				if (showHint) {
-					const [x, y] = indexToXY(i);
+					const [x, y] = indexToXY(i, this.flipped);
 					this.ctx.fillCircle(
 						x * this.squareWidth + this.squareWidth / 2,
 						y * this.squareWidth + this.squareWidth / 2,
@@ -195,7 +207,7 @@ export default class BoardView {
 		let x = Math.floor(rX / this.squareWidth);
 		let y = Math.floor(rY / this.squareWidth);
 
-		const index = XYToIndex(x, y);
+		const index = XYToIndex(x, y, this.flipped);
 
 		// mouse above hint so don't do anything until mouse up
 		if (this.selectedPiece !== null && this.moveToHint[index]) {
@@ -209,6 +221,10 @@ export default class BoardView {
 
 		this.selectedPiece = null;
 		this.moveToHint = range(0, 64).map(() => false);
+
+		if (this.playingSide !== this.board.nextMove) {
+			return;
+		}
 
 		let pieceFound = false;
 
@@ -267,7 +283,7 @@ export default class BoardView {
 		let x = Math.floor(rX / this.squareWidth);
 		let y = Math.floor(rY / this.squareWidth);
 
-		const index = XYToIndex(x, y);
+		const index = XYToIndex(x, y, this.flipped);
 
 		if (!this.moveToHint[index]) return;
 

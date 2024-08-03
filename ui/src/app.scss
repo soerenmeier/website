@@ -63,3 +63,49 @@ body {
 		padding: 2rem;
 	}
 }
+
+.btn-style {
+	display: block;
+	padding: 0.5rem 1rem;
+	text-decoration: none;
+	color: var(--white-60);
+	font-weight: 700;
+	border: 1px solid currentColor;
+	box-shadow: 2px 2px 0 var(--white-60);
+	border-radius: 0;
+	appearance: none;
+
+	&.inverted {
+		color: black;
+		box-shadow: 2px 2px 0 rgb(0 0 0 / 60%);
+	}
+
+	&:hover,
+	&:focus {
+		transform: translate(-1px, -1px);
+		box-shadow: 3px 3px 0;
+		outline: none;
+	}
+
+	&:active {
+		transform: translate(1px, 1px);
+		box-shadow: 1px 1px 0;
+	}
+}
+
+button.btn-style {
+	cursor: pointer;
+}
+
+.input-style {
+	display: block;
+	padding: 0.5rem 1rem;
+	border: 2px solid currentColor;
+	appearance: none;
+	border-radius: 0;
+
+	&::selection {
+		background-color: black;
+		color: white;
+	}
+}
