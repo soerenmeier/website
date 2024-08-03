@@ -1,3 +1,7 @@
+<script>
+	// open a ws connection
+</script>
+
 <div class="box">
 	<h2 class="box-h2">Play Chess</h2>
 	<p>

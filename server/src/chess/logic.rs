@@ -22,6 +22,10 @@ impl ComputedBoard {
 			.map(|(sq, p)| sq)
 	}
 
+	pub fn board(&self) -> &Board {
+		&self.inner
+	}
+
 	pub fn into_board(self) -> Board {
 		self.inner
 	}
@@ -64,12 +68,13 @@ impl ComputedBoard {
 		self.inner.next_move
 	}
 
+	/// Returns if a piece was moved the the duck needs to be moved,
+	/// else a piece needs to be moved
 	pub fn moved_piece(&self) -> bool {
 		self.inner.moved_piece
 	}
 
 	// does not clear the list
-	#[cfg_attr(feature = "flamegraph", inline(never))]
 	pub fn available_piece_moves(&self, list: &mut Vec<PieceMove>) {
 		assert!(list.is_empty());
 
@@ -93,7 +98,7 @@ impl ComputedBoard {
 	}
 
 	/// The move must be valid
-	pub fn convert_pgn_move(&self, mv: PgnMove) -> Move {
+	pub fn convert_pgn_move(&self, mv: PgnMove) -> Option<Move> {
 		let (piece, from, to, capture) = match mv.piece {
 			PgnPieceMove::Piece {
 				piece,
@@ -111,7 +116,7 @@ impl ComputedBoard {
 					Side::Black => (4, 6, 7, 5, 0),
 				};
 
-				return Move {
+				return Some(Move {
 					piece: PieceMove::Castle {
 						from_king: Square::from_xy(fk, y),
 						to_king: Square::from_xy(tk, y),
@@ -120,7 +125,7 @@ impl ComputedBoard {
 					},
 					duck: mv.duck,
 					side: self.inner.next_move,
-				};
+				});
 			}
 		};
 
@@ -163,21 +168,23 @@ impl ComputedBoard {
 
 			if mv_to == to {
 				// found the move
-				return Move {
+				return Some(Move {
 					piece: cand_mv,
 					duck: mv.duck,
 					side: self.inner.next_move,
-				};
+				});
 			}
 		}
 
-		panic!("no move found")
+		None
 	}
 
+	/// the move must be valid
 	pub fn apply_piece_move(&mut self, piece_move: PieceMove) {
 		self.inner.apply_piece_move(piece_move);
 	}
 
+	/// the move must be valid
 	pub fn apply_duck_move(&mut self, square: Square) {
 		self.inner.apply_duck_move(square, self.duck_square);
 		self.duck_square = Some(square);

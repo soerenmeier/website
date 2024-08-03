@@ -429,7 +429,6 @@ impl Board {
 	}
 
 	// the move needs to be valid
-	#[cfg_attr(feature = "flamegraph", inline(never))]
 	pub fn apply_piece_move(&mut self, mv: PieceMove) {
 		assert!(!self.moved_piece);
 
@@ -509,7 +508,6 @@ impl Board {
 		self.moved_piece = true;
 	}
 
-	#[cfg_attr(feature = "flamegraph", inline(never))]
 	pub fn apply_duck_move(
 		&mut self,
 		square: Square,

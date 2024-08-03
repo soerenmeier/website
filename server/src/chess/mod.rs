@@ -2,7 +2,6 @@ use chuchi::Chuchi;
 
 #[macro_use]
 mod macros;
-// pub mod api;
 pub mod chess;
 pub mod engine;
 pub mod logic;
