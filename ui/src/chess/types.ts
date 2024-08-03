@@ -57,38 +57,32 @@ const possiblePieceMoves = ['Piece', 'EnPassant', 'Castle'];
 
 type PieceMoveData =
 	| {
+			kind: 'Piece';
 			piece: string;
 			from: string;
 			to: string;
 			capture: string | null;
 			promotion: string | null;
-			kind: 'Piece';
 	  }
 	| {
+			kind: 'EnPassant';
 			from: string;
 			to: string;
-			kind: 'EnPassant';
 	  }
 	| {
+			kind: 'Castle';
 			fromKing: string;
 			toKing: string;
 			fromRook: string;
 			toRook: string;
-			kind: 'Castle';
 	  };
 
 export class PieceMove {
 	inner!: PieceMoveData;
 
 	constructor(d: any) {
-		if (typeof d !== 'object') throw new Error('Expected Object');
-
-		let kind = possiblePieceMoves.find(k => k in d);
-		if (!kind) throw new Error('Piece Move not found');
-		d = d[kind];
-
+		this.inner = {} as any;
 		Object.assign(this.inner, d);
-		this.inner.kind = kind as any;
 	}
 
 	// on castling returns the king
@@ -113,10 +107,7 @@ export class PieceMove {
 	}
 
 	toJSON() {
-		const obj: Record<string, any> = {};
-		obj[this.inner.kind] = {};
-		Object.assign(obj[this.inner.kind], this.inner);
-		return obj;
+		return this.inner;
 	}
 }
 
@@ -132,71 +123,16 @@ export class Move {
 	}
 }
 
+// prettier-ignore
 const SQUARES = [
-	'A8',
-	'B8',
-	'C8',
-	'D8',
-	'E8',
-	'F8',
-	'G8',
-	'H8',
-	'A7',
-	'B7',
-	'C7',
-	'D7',
-	'E7',
-	'F7',
-	'G7',
-	'H7',
-	'A6',
-	'B6',
-	'C6',
-	'D6',
-	'E6',
-	'F6',
-	'G6',
-	'H6',
-	'A5',
-	'B5',
-	'C5',
-	'D5',
-	'E5',
-	'F5',
-	'G5',
-	'H5',
-	'A4',
-	'B4',
-	'C4',
-	'D4',
-	'E4',
-	'F4',
-	'G4',
-	'H4',
-	'A3',
-	'B3',
-	'C3',
-	'D3',
-	'E3',
-	'F3',
-	'G3',
-	'H3',
-	'A2',
-	'B2',
-	'C2',
-	'D2',
-	'E2',
-	'F2',
-	'G2',
-	'H2',
-	'A1',
-	'B1',
-	'C1',
-	'D1',
-	'E1',
-	'F1',
-	'G1',
-	'H1',
+  'A8', 'B8', 'C8', 'D8', 'E8', 'F8', 'G8', 'H8',
+  'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
+  'A6', 'B6', 'C6', 'D6', 'E6', 'F6', 'G6', 'H6',
+  'A5', 'B5', 'C5', 'D5', 'E5', 'F5', 'G5', 'H5',
+  'A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4',
+  'A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3',
+  'A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
+  'A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1',
 ];
 
 export function squareToIndex(square: string): number {

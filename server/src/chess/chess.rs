@@ -14,7 +14,7 @@ use tokio::{
 	task::JoinHandle,
 };
 
-use super::{
+use duck_chess::{
 	logic::ComputedBoard,
 	types::{Board, Move, PieceMove, Square},
 };
@@ -315,7 +315,7 @@ async fn bg_task(
 mod tests {
 	use super::*;
 
-	use crate::chess::pgn::parse_moves;
+	use duck_chess::pgn::parse_moves;
 
 	// this should not be used in prod because of a race cond
 	macro_rules! make_move_pgn {

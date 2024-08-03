@@ -9,21 +9,25 @@ use serde::{Deserialize, Serialize};
 
 use crate::chess::chess::{Broadcast, Chess, MakeMoveResp};
 
-use super::{
-	chess::{History, HistoryMove, State},
-	types::{Board, Move, PieceMove},
-};
+use super::chess::{History, HistoryMove};
+use duck_chess::types::{Board, Move};
 
 /// The data which the client can receive from the server
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "type")]
+#[serde(tag = "kind")]
 enum Receive {
 	Hi {
 		id: UniqueId,
 	},
-	Board(Board),
-	History(History),
-	NewHistoryMove(HistoryMove),
+	Board {
+		board: Board,
+	},
+	History {
+		history: History,
+	},
+	NewHistoryMove {
+		r#move: HistoryMove,
+	},
 	/// Get's returned if you moved in the previous turn
 	AlreadyMoved,
 	// if you try to make a move, but somebody else already did one
@@ -37,6 +41,7 @@ enum Receive {
 
 /// The data which the client can send to the server
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "kind")]
 enum Send {
 	MakeMove {
 		name: String,
@@ -58,12 +63,14 @@ pub async fn ws_chess(
 	// the first step is to send the board and current standings
 	let state = chess.current_state();
 
-	ws.serialize(&Receive::Board(state.board))
+	ws.serialize(&Receive::Board { board: state.board })
 		.await
 		.map_err(json_err_serv)?;
-	ws.serialize(&Receive::History(state.history))
-		.await
-		.map_err(json_err_serv)?;
+	ws.serialize(&Receive::History {
+		history: state.history,
+	})
+	.await
+	.map_err(json_err_serv)?;
 
 	// the client is now up to date with the server
 	// we already subscribed to the board before sending the state
@@ -102,10 +109,10 @@ pub async fn ws_chess(
 				let broadcast = broadcast.unwrap();
 				match broadcast {
 					Broadcast::NewMove { board, history } => {
-						ws.serialize(&Receive::Board(board))
+						ws.serialize(&Receive::Board { board })
 							.await
 							.map_err(json_err_serv)?;
-						ws.serialize(&Receive::NewHistoryMove(history))
+						ws.serialize(&Receive::NewHistoryMove { r#move: history })
 							.await
 							.map_err(json_err_serv)?;
 					}

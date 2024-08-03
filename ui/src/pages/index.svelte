@@ -1,5 +1,7 @@
 <script>
-	import Chess from './index/Chess.svelte';
+	import { onMount } from 'svelte';
+
+	// import Chess from './index/Chess.svelte';
 	import Intro from './index/intro.svelte';
 
 	const blogs = [
@@ -72,6 +74,11 @@
 			href: 'https://github.com/soerenmeier/alpenwind',
 		},
 	];
+
+	let ChessComp = $state();
+	onMount(async () => {
+		ChessComp = (await import('./index/Chess.svelte')).default;
+	});
 </script>
 
 <svelte:head>
@@ -116,7 +123,9 @@
 	</div>
 </div>
 
-<Chess />
+{#if ChessComp}
+	<ChessComp />
+{/if}
 
 <style lang="scss">
 	.projects {

@@ -1,17 +1,19 @@
 import Sprite from '@/lib/Sprite';
 import {
 	Board,
+	PieceMove,
 	XYToIndex,
 	indexToSquare,
 	indexToXY,
 	squareToIndex,
-} from './data';
+} from './types';
 // import { availableMoves } from './api/api.js';
 import { range } from 'chuchi-utils';
 import Listeners from 'chuchi-utils/sync/Listeners';
 
 import pieceSpriteSvg from '/assets/piece_sprite.svg';
 import type Context2d from 'chuchi-legacy/dom/Context2d';
+import type { AvailableMoves, Wasm } from '@/lib/wasm';
 
 const pieceSprite = new Sprite(pieceSpriteSvg, 45, 45);
 
@@ -35,7 +37,8 @@ const pieceSpriteLookup: Record<string, [number, number]> = {
 export default class BoardView {
 	ctx: Context2d;
 	board: Board;
-	availableMoves: null;
+	wasm: Wasm;
+	availableMoves: AvailableMoves;
 	squareWidth: number;
 
 	holdingPiece: number | null;
@@ -49,10 +52,11 @@ export default class BoardView {
 
 	moveListeners: Listeners<[['Piece' | 'Duck', string]]>;
 
-	constructor(ctx: Context2d) {
+	constructor(ctx: Context2d, wasm: Wasm) {
 		this.ctx = ctx;
 		this.board = null as any;
-		this.availableMoves = null;
+		this.wasm = wasm;
+		this.availableMoves = null as any;
 		this.squareWidth = ctx.width / 8;
 
 		// contains the index of the piece that is holded
@@ -81,16 +85,17 @@ export default class BoardView {
 
 	async updateBoard(board: Board) {
 		this.board = board;
-		this.availableMoves = null;
+		this.availableMoves = this.wasm.availableMoves(board);
 		this.holdingPiece = null;
 		this.holdingPieceRealXY = null;
 		this.selectedPiece = null;
 		this.moveToHint = range(0, 64).map(() => false);
 
-		// todo avaiablemoves should come from wasm or just from websocket?
-		// this.availableMoves = await availableMoves(board);
-
-		if (board.movedPiece) {
+		console.assert(
+			board.movedPiece === (this.availableMoves.kind === 'Duck'),
+			'board and avaiableMoves are not on the same page',
+		);
+		if (board.movedPiece && this.availableMoves.kind === 'Duck') {
 			const foundDuck = board.duckPosition();
 			if (foundDuck === -1) {
 				this.selectedPiece = -1;
@@ -270,7 +275,11 @@ export default class BoardView {
 					);
 				});
 
-				if (move) this.moveListeners.trigger(['Piece', move]);
+				if (move) {
+					// a piece move means we do the calculation locally
+					const newBoard = this.wasm.movePiece(move);
+					// this.moveListeners.trigger(['Piece', move]);
+				}
 				break;
 			case 'Duck':
 				this.moveListeners.trigger(['Duck', indexToSquare(index)]);

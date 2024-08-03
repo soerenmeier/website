@@ -12,6 +12,11 @@ export default defineConfig(({ isSsrBuild }) => {
 		ssr: {
 			noExternal: isSsrBuild ? true : ['chuchi'],
 		},
+		server: {
+			fs: {
+				allow: ['..'],
+			},
+		},
 		plugins: [
 			svelte({
 				compilerOptions: {

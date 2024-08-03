@@ -2,12 +2,13 @@
 	import { timeout } from 'chuchi-utils';
 	import Context2d from 'chuchi-legacy/dom/Context2d';
 	import BoardView from './BoardView';
-	import { Board } from './data';
+	import { Board } from './types';
+	import type { Wasm } from '@/lib/wasm';
 	// import { applyMove } from './api/api.js';
 
 	// should be a Board (see api)
 	// export let board;
-	let { board }: { board: Board } = $props();
+	let { board, wasm }: { board: Board; wasm: Wasm } = $props();
 
 	let view: BoardView = $state(null as any);
 	let canvas: HTMLCanvasElement;
@@ -17,9 +18,10 @@
 		const ctx = new Context2d(el);
 		ctx.updateSize(600, 600);
 
-		view = new BoardView(ctx);
+		view = new BoardView(ctx, wasm);
 
 		view.onMove(async ([kind, move]) => {
+			console.log('move', kind, move);
 			// board = await applyMove(kind, move, view.board);
 		});
 
