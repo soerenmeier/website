@@ -1,5 +1,5 @@
 import { Writable } from 'chuchi/stores';
-import { Board, History, Move } from './types';
+import { Board, History, HistoryMove, Move } from './types';
 
 export type Receive =
 	| {
@@ -16,7 +16,7 @@ export type Receive =
 	  }
 	| {
 			kind: 'NewHistoryMove';
-			move: unknown;
+			move: HistoryMove;
 	  }
 	| {
 			kind: 'AlreadyMoved';
@@ -93,6 +93,10 @@ export default class Connection {
 			case 'History':
 				recv.history = new History(recv.history);
 				this.history.set(recv.history);
+				break;
+			case 'NewHistoryMove':
+				recv.move = new HistoryMove(recv.move);
+				this.history.set(this.history.get().cloneAdd(recv.move));
 				break;
 		}
 

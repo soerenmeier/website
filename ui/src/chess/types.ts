@@ -167,6 +167,15 @@ export class History {
 	constructor(d: any) {
 		this.moves = d.moves.map((m: any) => new HistoryMove(m));
 	}
+
+	cloneAdd(move: HistoryMove): History {
+		const moves = [...this.moves, move];
+
+		const hist = Object.create(History.prototype);
+		hist.moves = moves;
+
+		return hist;
+	}
 }
 
 export class HistoryMove {

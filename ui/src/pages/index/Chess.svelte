@@ -9,6 +9,7 @@
 	const board = conn.board;
 	const history = conn.history;
 	let wasm = $state();
+	let name = $state('');
 
 	console.log('board', board);
 
@@ -22,6 +23,7 @@
 	function onMove(move: Move) {
 		// make move
 		console.log('make move', move);
+		conn.makeMove(name, $history.moves.length, move);
 	}
 
 	onMount(() => {
@@ -43,6 +45,8 @@
 		<br />
 		Sören is currently online
 	</p>
+
+	<input type="text" placeholder="Enter your name" bind:value={name} />
 
 	{#if $board && wasm}
 		<BoardComp board={$board} {wasm} onmove={onMove} />

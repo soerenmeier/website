@@ -41,7 +41,7 @@ enum Receive {
 
 /// The data which the client can send to the server
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "kind", rename_all = "camelCase")]
+#[serde(tag = "kind", rename_all_fields = "camelCase")]
 enum Send {
 	MakeMove {
 		name: String,
