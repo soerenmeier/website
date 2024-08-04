@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { onMount, untrack } from 'svelte';
-	import { load } from '@/lib/wasm';
+	import { load, Wasm } from '@/lib/wasm';
 	import Connection from '@/chess/Connection';
 	import { Board, Move } from '@/chess/types';
 	import BoardComp from '@/chess/Board.svelte';
+	import Duration from 'chuchi-legacy/time/Duration';
+	import { Writable } from 'chuchi/stores';
+	import Toasts from './Toasts.svelte';
 
 	const conn = new Connection();
 	const board = conn.board;
@@ -11,6 +14,12 @@
 	let wasm = $state();
 	let name = $state('');
 	let started = $state(false);
+
+	let extendedHistory = $derived.by(() => {
+		if (!wasm || !$history) return null;
+
+		return (wasm as Wasm).extendedHistory($history);
+	});
 
 	let playingSide: 'White' | 'Black' = $state('White');
 
@@ -23,28 +32,13 @@
 		// we will never change side, until the game is finished
 
 		const didIPlay = hist.didConPlay(conn.id);
-		console.log('didIPlay', didIPlay);
-		// if (didIPlay) return undefined;
 		if (didIPlay) return;
 
-		playingSide = $board.nextMove;
-	});
-	$inspect(playingSide, 'playingSide');
-	// $effect(() => console.log('playingSide', playingSide));
-
-	console.log('board', board);
-
-	// open a ws connection
-	// find out
-
-	$effect(() => {
-		console.log('new board or history', $board, $history);
+		playingSide = $board!.nextMove;
 	});
 
 	function onMove(move: Move) {
-		// make move
-		console.log('make move', move);
-		conn.makeMove(name, $history.moves.length, move);
+		conn.makeMove(name, $history!.moves.length, move);
 	}
 
 	function onSubmit(e: Event) {
@@ -52,26 +46,48 @@
 		started = true;
 	}
 
+	const now = new Writable(Date.now());
+	const timeInterval = setInterval(() => {
+		now.set(Date.now());
+	}, 5000);
+
 	onMount(() => {
 		conn.connect();
 		load().then(wa => {
 			wasm = wa;
 		});
 
-		return () => conn.disconnect();
+		return () => {
+			clearInterval(timeInterval);
+			conn.disconnect();
+		};
 	});
 </script>
+
+<Toasts getId={() => conn.id} {extendedHistory} />
 
 <div class="box">
 	<h2 class="box-h2">Play Chess</h2>
 	<p>
 		Play duck chess with other visitors, the board is updated in real time
 		but the state get's stored so you can come back at a later time.
-		<br />
-		Sören is currently online
 	</p>
 
-	<!-- games played, live players highscore? -->
+	<!-- todo add waiting? -->
+	<p class="turn">
+		{#if $board?.nextMove !== playingSide}
+			Waiting for
+		{/if}
+		<strong>
+			{$board?.nextMove}
+		</strong>
+		to move
+		{#if $board?.movedPiece}
+			<strong>the duck</strong>
+		{/if}
+	</p>
+
+	<!-- who is online, which turn is it, does the duck need to be moved?, games played, live players highscore? -->
 
 	<div class="board">
 		{#if !started}
@@ -94,20 +110,37 @@
 
 		<div class="inner">
 			{#if $board && wasm}
-				<BoardComp
-					board={$board}
-					{wasm}
-					{playingSide}
-					onmove={onMove}
-				/>
+				<BoardComp {board} {wasm} {playingSide} onmove={onMove} />
 			{:else}
 				<p>Loading...</p>
 			{/if}
 		</div>
 	</div>
+
+	<div class="history">
+		{#each (extendedHistory ?? []).slice().reverse() as move}
+			{@const dur = new Duration(move.time.time - $now)}
+
+			<p class="move">
+				<span class="name">{move.name}</span>
+				<span class="pgn">{move.pgn}</span>
+				<span class="time">{dur.toStr('en')}</span>
+			</p>
+		{/each}
+	</div>
 </div>
 
 <style lang="scss">
+	.turn {
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+		font-size: 2rem;
+		text-align: center;
+
+		strong {
+			font-weight: 700;
+		}
+	}
 	.board {
 		position: relative;
 		padding-bottom: 100%;
@@ -150,5 +183,15 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
+	}
+
+	.history {
+		margin-top: 1rem;
+	}
+
+	.move {
+		display: grid;
+		grid-template-columns: 2fr 1fr 1fr;
+		margin-top: 0.1rem;
 	}
 </style>

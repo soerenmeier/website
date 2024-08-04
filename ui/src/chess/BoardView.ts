@@ -42,7 +42,11 @@ export default class BoardView {
 	wasm: Wasm;
 	availableMoves: AvailableMoves;
 	squareWidth: number;
-	activeMove: { piece: PieceMove | null; duck: string | null };
+	activeMove: {
+		board: Board | null;
+		piece: PieceMove | null;
+		duck: string | null;
+	};
 
 	holdingPiece: number | null;
 	holdingPieceRealXY: [number, number] | null;
@@ -55,6 +59,7 @@ export default class BoardView {
 	playingSide: 'White' | 'Black';
 
 	moveListeners: Listeners<[Move]>;
+	setBoard: (board: Board) => void;
 
 	constructor(ctx: Context2d, wasm: Wasm) {
 		this.ctx = ctx;
@@ -62,7 +67,7 @@ export default class BoardView {
 		this.wasm = wasm;
 		this.availableMoves = null as any;
 		this.squareWidth = ctx.width / 8;
-		this.activeMove = { piece: null, duck: null };
+		this.activeMove = { board: null, piece: null, duck: null };
 
 		// contains the index of the piece that is holded
 		this.holdingPiece = null;
@@ -78,6 +83,7 @@ export default class BoardView {
 		this.playingSide = 'White';
 
 		this.moveListeners = new Listeners();
+		this.setBoard = () => {};
 	}
 
 	// fn(x, y, i)
@@ -93,11 +99,12 @@ export default class BoardView {
 		return this.playingSide === 'Black';
 	}
 
-	async updateBoard(board: Board, reset: boolean = true) {
+	async updateBoard(board: Board) {
 		this.board = board;
 		this.availableMoves = this.wasm.availableMoves(board);
-		if (reset) {
-			this.activeMove = { piece: null, duck: null };
+		// we need to reset the active move if the activeMove.board is not eq to board
+		if (!this.activeMove.board?.eq(board)) {
+			this.activeMove = { board, piece: null, duck: null };
 		}
 		this.holdingPiece = null;
 		this.holdingPieceRealXY = null;
@@ -299,8 +306,9 @@ export default class BoardView {
 				if (move) {
 					// a piece move means we do the calculation locally
 					const newBoard = this.wasm.movePiece(this.board, move);
+					this.activeMove.board = newBoard;
 					this.activeMove.piece = move;
-					this.updateBoard(newBoard, false);
+					this.setBoard(newBoard);
 				}
 				break;
 			case 'Duck':

@@ -35,12 +35,12 @@ export default class Connection {
 	ws!: WebSocket;
 	id!: string;
 
-	board: Writable<Board>;
-	history: Writable<History>;
+	board: Writable<Board | null>;
+	history: Writable<History | null>;
 
 	constructor() {
-		this.board = new Writable(null as any);
-		this.history = new Writable(null as any);
+		this.board = new Writable(null);
+		this.history = new Writable(null);
 	}
 
 	connect() {
@@ -89,7 +89,7 @@ export default class Connection {
 				recv.board = new Board(recv.board);
 				recv.history = new HistoryMove(recv.history);
 				this.board.set(recv.board);
-				this.history.set(this.history.get().cloneAdd(recv.history));
+				this.history.set(this.history.get()!.cloneAdd(recv.history));
 				break;
 		}
 

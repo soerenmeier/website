@@ -4,6 +4,7 @@
 	import BoardView from './BoardView';
 	import { Board, Move } from './types';
 	import type { Wasm } from '@/lib/wasm';
+	import { Writable } from 'chuchi/stores';
 	// import { applyMove } from './api/api.js';
 
 	// should be a Board (see api)
@@ -12,11 +13,13 @@
 		board,
 		wasm,
 		onmove,
+		onpiecemove,
 		playingSide,
 	}: {
-		board: Board;
+		board: Writable<Board>;
 		wasm: Wasm;
 		onmove: (move: Move) => void;
+		onpiecemove: (board: Board) => void;
 		playingSide: 'White' | 'Black';
 	} = $props();
 
@@ -32,11 +35,12 @@
 		view = new BoardView(ctx, wasm);
 
 		view.onMove(onmove);
+		view.setBoard = nBoard => ($board = nBoard);
 
 		// load sprite
 		await timeout(300);
 
-		await view.updateBoard(board);
+		await view.updateBoard($board);
 
 		requestAnimationFrame(draw);
 	}
@@ -44,7 +48,7 @@
 	$effect(() => {
 		if (!view) return;
 
-		view.updateBoard(board);
+		view.updateBoard($board);
 		view.playingSide = playingSide;
 	});
 

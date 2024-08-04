@@ -1,5 +1,6 @@
 // import Data from 'fire/data/data.js';
 // import { Option } from 'fire/data/parsetypes.js';
+import { tryGlobal } from '@/lib/wasm';
 import DateTime from 'chuchi-legacy/time/DateTime';
 import { range } from 'chuchi-utils';
 
@@ -34,6 +35,21 @@ export class Board {
 	duckPosition(): number {
 		return this.board.findIndex(p => p?.kind === 'Duck');
 	}
+
+	eq(b: Board): boolean {
+		return (
+			this.board.every((p, i) => {
+				const bp = b.board[i];
+				if (!p || !bp) return p === bp;
+
+				return p.eq(bp);
+			}) &&
+			this.canCastle.eq(b.canCastle) &&
+			this.enPassant === b.enPassant &&
+			this.nextMove === b.nextMove &&
+			this.movedPiece === b.movedPiece
+		);
+	}
 }
 
 export class Piece {
@@ -43,6 +59,10 @@ export class Piece {
 	constructor(d: any) {
 		Object.assign(this, d);
 	}
+
+	eq(b: Piece): boolean {
+		return this.kind === b.kind && this.side === b.side;
+	}
 }
 
 export class CanCastle {
@@ -51,6 +71,15 @@ export class CanCastle {
 
 	constructor(d: any) {
 		Object.assign(this, d);
+	}
+
+	eq(b: CanCastle): boolean {
+		return (
+			this.white[0] === b.white[0] &&
+			this.white[1] === b.white[1] &&
+			this.black[0] === b.black[0] &&
+			this.black[1] === b.black[1]
+		);
 	}
 }
 
@@ -130,6 +159,14 @@ export class Move {
 		move.side = side;
 
 		return move;
+	}
+
+	toJSON() {
+		return {
+			piece: this.piece.toJSON(),
+			duck: this.duck,
+			side: this.side,
+		};
 	}
 }
 
