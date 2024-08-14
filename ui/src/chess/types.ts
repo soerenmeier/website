@@ -8,8 +8,9 @@ export class Board {
 	board: (Piece | null)[];
 	canCastle: CanCastle;
 	enPassant!: string | null;
-	nextMove!: 'White' | 'Black';
+	nextMove!: null | 'White' | 'Black';
 	movedPiece!: boolean;
+	winner!: null | 'White' | 'Black';
 
 	constructor(d: any) {
 		Object.assign(this, d);
@@ -27,13 +28,17 @@ export class Board {
 		});
 	}
 
-	getPiece(i: number) {
+	getPiece(i: number): Piece | null {
 		return this.board[i];
 	}
 
 	// returns the index or -1
 	duckPosition(): number {
 		return this.board.findIndex(p => p?.kind === 'Duck');
+	}
+
+	hasEnded(): boolean {
+		return !this.nextMove;
 	}
 
 	eq(b: Board): boolean {
@@ -143,7 +148,8 @@ export class PieceMove {
 
 export class Move {
 	piece: PieceMove;
-	duck: string;
+	// should only be empty on the last move (the winning move)
+	duck: string | null;
 	side: string;
 
 	constructor(d: any) {
@@ -152,7 +158,7 @@ export class Move {
 		this.side = d.side;
 	}
 
-	static new(piece: PieceMove, duck: string, side: string): Move {
+	static new(piece: PieceMove, duck: string | null, side: string): Move {
 		const move = Object.create(this.prototype);
 		move.piece = piece;
 		move.duck = duck;

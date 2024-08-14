@@ -40,7 +40,7 @@ export default class BoardView {
 	ctx: Context2d;
 	board: Board;
 	wasm: Wasm;
-	availableMoves: AvailableMoves;
+	availableMoves: AvailableMoves | { kind: 'None' };
 	squareWidth: number;
 	activeMove: {
 		board: Board | null;
@@ -65,7 +65,7 @@ export default class BoardView {
 		this.ctx = ctx;
 		this.board = null as any;
 		this.wasm = wasm;
-		this.availableMoves = null as any;
+		this.availableMoves = { kind: 'None' };
 		this.squareWidth = ctx.width / 8;
 		this.activeMove = { board: null, piece: null, duck: null };
 
@@ -101,7 +101,11 @@ export default class BoardView {
 
 	async updateBoard(board: Board) {
 		this.board = board;
-		this.availableMoves = this.wasm.availableMoves(board);
+		if (!board.hasEnded()) {
+			this.availableMoves = this.wasm.availableMoves(board);
+		} else {
+			this.availableMoves = { kind: 'None' };
+		}
 		// we need to reset the active move if the activeMove.board is not eq to board
 		if (!this.activeMove.board?.eq(board)) {
 			this.activeMove = { board, piece: null, duck: null };
@@ -129,6 +133,10 @@ export default class BoardView {
 
 	onMove(fn: (move: Move) => void) {
 		return this.moveListeners.add(fn);
+	}
+
+	resize() {
+		this.ctx.updateSize();
 	}
 
 	drawPieceReal(
@@ -200,9 +208,9 @@ export default class BoardView {
 
 		if (this.holdingPiece !== null) {
 			// draw the holding piece
-			const piece = this.board.getPiece(this.holdingPiece);
+			const piece = this.board.getPiece(this.holdingPiece)!;
 
-			let [x, y] = this.holdingPieceRealXY;
+			let [x, y] = this.holdingPieceRealXY!;
 			x -= this.squareWidth / 2;
 			y -= this.squareWidth / 2;
 
@@ -210,7 +218,7 @@ export default class BoardView {
 		}
 	}
 
-	mouseDown(rX, rY) {
+	mouseDown(rX: number, rY: number) {
 		let x = Math.floor(rX / this.squareWidth);
 		let y = Math.floor(rY / this.squareWidth);
 
@@ -281,7 +289,7 @@ export default class BoardView {
 		// and then show hints for that piece
 	}
 
-	mouseUp(rX, rY) {
+	mouseUp(rX: number, rY: number) {
 		const startSquare = this.holdingPiece ?? this.selectedPiece;
 
 		this.holdingPiece = null;
@@ -303,20 +311,29 @@ export default class BoardView {
 					);
 				});
 
-				if (move) {
-					// a piece move means we do the calculation locally
-					const newBoard = this.wasm.movePiece(this.board, move);
-					this.activeMove.board = newBoard;
-					this.activeMove.piece = move;
-					this.setBoard(newBoard);
+				if (!move) return;
+
+				// a piece move means we do the calculation locally
+				const newBoard = this.wasm.movePiece(this.board, move);
+				if (newBoard.hasEnded()) {
+					// since the board has ended we don't wan't to move the duck
+					// but trigger the move Listeners
+					const mov = Move.new(move, null, this.board.nextMove!);
+
+					this.moveListeners.trigger(mov);
+					return;
 				}
+
+				this.activeMove.board = newBoard;
+				this.activeMove.piece = move;
+				this.setBoard(newBoard);
 				break;
 			case 'Duck':
 				this.activeMove.duck = indexToSquare(index);
 				const mov = Move.new(
 					this.activeMove.piece!,
 					this.activeMove.duck,
-					this.board.nextMove,
+					this.board.nextMove!,
 				);
 
 				this.moveListeners.trigger(mov);
@@ -324,7 +341,7 @@ export default class BoardView {
 		}
 	}
 
-	mouseMove(x, y) {
+	mouseMove(x: number, y: number) {
 		if (this.holdingPiece !== null) this.holdingPieceRealXY = [x, y];
 	}
 }

@@ -96,9 +96,17 @@
 
 		if (x !== null) view.mouseMove(x, y);
 	}
+
+	function onResize() {
+		view.resize();
+	}
 </script>
 
-<svelte:window on:mousemove={onMouseMove} on:mouseup={onMouseUp} />
+<svelte:window
+	on:mousemove={onMouseMove}
+	on:mouseup={onMouseUp}
+	on:resize={onResize}
+/>
 
 <canvas id="canvas" use:newCanvas onmousedown={onMouseDown}></canvas>
 

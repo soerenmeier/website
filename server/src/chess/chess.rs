@@ -228,11 +228,13 @@ impl Inner {
 		self.duck_squares_tmp.clear();
 		board.available_duck_squares(&mut self.duck_squares_tmp);
 
-		if !self.duck_squares_tmp.contains(&mov.duck) {
-			return MakeMoveResp::WrongMove;
-		}
+		if let Some(duck) = mov.duck {
+			if !self.duck_squares_tmp.contains(&duck) {
+				return MakeMoveResp::WrongMove;
+			}
 
-		board.apply_duck_move(mov.duck);
+			board.apply_duck_move(duck);
+		}
 
 		self.board = board;
 

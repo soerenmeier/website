@@ -73,19 +73,20 @@
 		but the state get's stored so you can come back at a later time.
 	</p>
 
-	<!-- todo add waiting? -->
-	<p class="turn">
-		{#if $board?.nextMove !== playingSide}
-			Waiting for
-		{/if}
-		<strong>
-			{$board?.nextMove}
-		</strong>
-		to move
-		{#if $board?.movedPiece}
-			<strong>the duck</strong>
-		{/if}
-	</p>
+	{#if $board && !$board.hasEnded()}
+		<p class="turn">
+			{#if $board.nextMove !== playingSide}
+				Waiting for
+			{/if}
+			<strong>
+				{$board.nextMove}
+			</strong>
+			to move
+			{#if $board.movedPiece}
+				<strong>the duck</strong>
+			{/if}
+		</p>
+	{/if}
 
 	<!-- who is online, which turn is it, does the duck need to be moved?, games played, live players highscore? -->
 
@@ -108,6 +109,20 @@
 			</div>
 		{/if}
 
+		{#if $board?.hasEnded()}
+			<div class="end-screen">
+				<div class="end-center">
+					<p>
+						{$board.winner} won the game
+					</p>
+
+					<button class="btn-style inverted" type="submit">
+						Play again
+					</button>
+				</div>
+			</div>
+		{/if}
+
 		<div class="inner">
 			{#if $board && wasm}
 				<BoardComp {board} {wasm} {playingSide} onmove={onMove} />
@@ -121,7 +136,7 @@
 		{#each (extendedHistory ?? []).slice().reverse() as move}
 			{@const dur = new Duration(move.time.time - $now)}
 
-			<p class="move">
+			<p class="move" class:ending-move={move.board.hasEnded()}>
 				<span class="name">{move.name}</span>
 				<span class="pgn">{move.pgn}</span>
 				<span class="time">{dur.toStr('en')}</span>
@@ -141,12 +156,14 @@
 			font-weight: 700;
 		}
 	}
+
 	.board {
 		position: relative;
 		padding-bottom: 100%;
 	}
 
-	.start-screen {
+	.start-screen,
+	.end-screen {
 		position: absolute;
 		display: flex;
 		top: 0;
@@ -177,6 +194,20 @@
 		}
 	}
 
+	.end-center {
+		display: flex;
+		text-align: center;
+		justify-content: center;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+
+		p {
+			font-size: 2rem;
+			font-weight: 700;
+		}
+	}
+
 	.inner {
 		position: absolute;
 		top: 0;
@@ -193,5 +224,11 @@
 		display: grid;
 		grid-template-columns: 2fr 1fr 1fr;
 		margin-top: 0.1rem;
+
+		&.ending-move {
+			.pgn {
+				font-weight: 700;
+			}
+		}
 	}
 </style>

@@ -88,7 +88,9 @@ pub fn extended_history(history: JsValue) -> JsValue {
             let pgn = board.convert_move_to_pgn(mov);
 
             board.apply_piece_move(mov.piece);
-            board.apply_duck_move(mov.duck);
+            if let Some(duck) = mov.duck {
+                board.apply_duck_move(duck);
+            }
 
             HistoryMove {
                 board: board.board().clone(),
