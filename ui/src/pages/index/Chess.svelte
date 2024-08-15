@@ -7,6 +7,7 @@
 	import Duration from 'chuchi-legacy/time/Duration';
 	import { Writable } from 'chuchi/stores';
 	import Toasts from './Toasts.svelte';
+	import Confetti from 'svelte-confetti';
 
 	const conn = new Connection();
 	const board = conn.board;
@@ -111,6 +112,11 @@
 
 		{#if $board?.hasEnded()}
 			<div class="end-screen">
+				<div class="confetti">
+					<!-- not really perfect but let's leave it like this for the moment -->
+					<Confetti x={[-2, 2]} y={[2, -2]} amount={300} />
+				</div>
+
 				<div class="end-center">
 					<p>
 						{$board.winner} won the game
@@ -174,6 +180,12 @@
 		align-items: center;
 		background-color: rgb(0 0 0 / 50%);
 		z-index: 10;
+	}
+
+	.confetti {
+		position: absolute;
+		top: 50%;
+		left: 50%;
 	}
 
 	.name-form {

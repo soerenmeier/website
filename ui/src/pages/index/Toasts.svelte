@@ -25,15 +25,25 @@
 			return;
 		}
 
-		if (previousLength < extendedHistory.length) {
-			toasts = [
-				...untrack(() => toasts),
-				...extendedHistory
-					.slice(previousLength)
-					.filter(move => move.conId !== getId()),
-			];
+		if (previousLength >= extendedHistory.length) return;
+
+		// if the last move was done by us, let's just remove all toasts
+		const lastHistory = extendedHistory[extendedHistory.length - 1];
+		if (lastHistory.conId === getId()) {
+			toasts = [];
 			previousLength = extendedHistory.length;
+			return;
 		}
+
+		toasts = [
+			...untrack(() => toasts),
+			...extendedHistory
+				.slice(previousLength)
+				.filter(move => move.conId !== getId()),
+		];
+		// todo maybe play a song, one more thing, i don't like this effect,
+		// i like events more
+		previousLength = extendedHistory.length;
 	});
 
 	function onClose(id: number) {
