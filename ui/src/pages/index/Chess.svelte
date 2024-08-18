@@ -116,10 +116,12 @@
 
 		{#if $board?.hasEnded()}
 			<div class="end-screen">
-				<div class="confetti">
-					<!-- not really perfect but let's leave it like this for the moment -->
-					<Confetti x={[-2, 2]} y={[2, -2]} amount={300} />
-				</div>
+				{#if $board.winner === playingSide}
+					<div class="confetti">
+						<!-- not really perfect but let's leave it like this for the moment -->
+						<Confetti x={[-2, 2]} y={[2, -2]} amount={300} />
+					</div>
+				{/if}
 
 				<div class="end-center">
 					<p>
@@ -170,6 +172,7 @@
 	.board {
 		position: relative;
 		padding-bottom: 100%;
+		margin-top: 1rem;
 	}
 
 	.start-screen,
