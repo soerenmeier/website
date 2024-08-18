@@ -45,6 +45,10 @@
 	function onSubmit(e: Event) {
 		e.preventDefault();
 		started = true;
+
+		if (typeof sa_event === 'function') {
+			sa_event('play_chess', { name });
+		}
 	}
 
 	function onPlayAgain() {
@@ -105,6 +109,7 @@
 						class="input-style"
 						placeholder="Enter your name"
 						bind:value={name}
+						required
 					/>
 
 					<button class="btn-style inverted" type="submit">

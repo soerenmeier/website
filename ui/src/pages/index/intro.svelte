@@ -29,7 +29,7 @@
 	.center {
 		width: 100%;
 		max-width: 540px;
-		/* margin-top: 1rem; */
+		padding: 0 1rem;
 	}
 
 	h1 {
