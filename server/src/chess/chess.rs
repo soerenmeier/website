@@ -16,12 +16,13 @@ use tokio::{
 
 use duck_chess::{
 	logic::ComputedBoard,
-	types::{Board, Move, PieceMove, Square},
+	types::{Board, Move, PieceMove, Side, Square},
 };
 
 #[derive(Debug, Clone)]
 pub enum Broadcast {
 	NewMove { board: Board, history: HistoryMove },
+	GameWon { winner: Option<Side> },
 }
 
 #[derive(Debug)]
@@ -190,6 +191,11 @@ impl Inner {
 		}
 	}
 
+	pub fn restart(&mut self) {
+		self.board = ComputedBoard::new();
+		self.history = History { moves: Vec::new() };
+	}
+
 	pub fn make_move(
 		&mut self,
 		id: UniqueId,
@@ -291,22 +297,20 @@ async fn bg_task(
 				let mut inner = inner.inner.write().unwrap();
 				let resp = inner.make_move(id, name, move_number, mov.clone());
 
-				let broadcast = match &resp {
-					MakeMoveResp::Ok { board, history } => {
-						Some(Broadcast::NewMove {
-							board: board.clone(),
-							history: history.clone(),
-						})
-					}
-					_ => None,
-				};
-
 				// we don't care if the receiver is still there
-				let _ = tx_resp.send(resp);
+				let _ = tx_resp.send(resp.clone());
 
-				if let Some(broadcast) = broadcast {
+				if let MakeMoveResp::Ok { board, history } = resp {
 					// we don't care if nobody is listening
-					let _ = tx.send(broadcast);
+					let _ = tx.send(Broadcast::NewMove { board, history });
+				}
+
+				if inner.board.has_ended() {
+					// let's reset the board
+					let _ = tx.send(Broadcast::GameWon {
+						winner: inner.board.winner(),
+					});
+					inner.restart();
 				}
 			}
 		}

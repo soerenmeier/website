@@ -45,6 +45,7 @@ enum Send {
 		move_number: u16,
 		r#move: Move,
 	},
+	Init,
 }
 
 #[ws("/api/chess")]
@@ -54,16 +55,20 @@ pub async fn ws_chess(
 ) -> Result<(), Error> {
 	let uid = UniqueId::new();
 
-	// the first step is to send the board and current standings
-	let state = chess.current_state();
+	{
+		// the first step is to send the board and current standings
+		let state = chess.current_state();
 
-	ws.serialize(&Receive::Init {
-		id: uid,
-		board: state.board,
-		history: state.history,
-	})
-	.await
-	.map_err(json_err_serv)?;
+		ws.serialize(&Receive::Init {
+			id: uid,
+			board: state.board,
+			history: state.history,
+		})
+		.await
+		.map_err(json_err_serv)?;
+	}
+
+	let mut wait_on_init = false;
 
 	// the client is now up to date with the server
 	// we already subscribed to the board before sending the state
@@ -98,16 +103,37 @@ pub async fn ws_chess(
 						if let Some(recv) = recv {
 							ws.serialize(&recv).await.map_err(json_err_serv)?;
 						}
+					},
+					Send::Init => {
+						wait_on_init = false;
+						// the first step is to send the board and current standings
+						let state = chess.current_state();
+
+						ws.serialize(&Receive::Init {
+							id: uid,
+							board: state.board,
+							history: state.history,
+						})
+						.await
+						.map_err(json_err_serv)?;
 					}
 				}
 			},
 			broadcast = chess.receive() => {
+				if wait_on_init {
+					continue;
+				}
+
 				let broadcast = broadcast.unwrap();
 				match broadcast {
 					Broadcast::NewMove { board, history } => {
 						ws.serialize(&Receive::Update { board, history })
 							.await
 							.map_err(json_err_serv)?;
+					}
+					Broadcast::GameWon { .. } => {
+						wait_on_init = true;
+						// now let's wait until the user is ready to play again
 					}
 				}
 			}

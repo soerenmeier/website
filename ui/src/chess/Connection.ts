@@ -67,6 +67,10 @@ export default class Connection {
 		this.ws.send(JSON.stringify(send));
 	}
 
+	restart() {
+		this.ws.send(JSON.stringify({ kind: 'Init' }));
+	}
+
 	private onOpen(e: Event) {
 		console.log('Connected');
 	}

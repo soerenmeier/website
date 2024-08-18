@@ -47,6 +47,10 @@
 		started = true;
 	}
 
+	function onPlayAgain() {
+		conn.restart();
+	}
+
 	const now = new Writable(Date.now());
 	const timeInterval = setInterval(() => {
 		now.set(Date.now());
@@ -122,7 +126,7 @@
 						{$board.winner} won the game
 					</p>
 
-					<button class="btn-style inverted" type="submit">
+					<button class="btn-style inverted" onclick={onPlayAgain}>
 						Play again
 					</button>
 				</div>
