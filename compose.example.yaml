@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  server:
+    image: registry.dihei.co/builds/web/soerenmeier-ch
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4986:4986"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

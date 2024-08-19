@@ -2,5 +2,9 @@
 resolver = "2"
 members = ["server", "wasm"]
 
-[profile.release]
+# [profile.release]
+# lto = true
+
+[profile.release-lto]
+inherits = "release"
 lto = true

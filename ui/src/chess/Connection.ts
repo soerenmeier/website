@@ -31,6 +31,11 @@ export type Send = {
 	move: Move;
 };
 
+let wsUrl = '/api/chess';
+if (import.meta.env.DEV) {
+	wsUrl = 'ws://localhost:4986/api/chess';
+}
+
 export default class Connection {
 	ws!: WebSocket;
 	id!: string;
@@ -44,7 +49,7 @@ export default class Connection {
 	}
 
 	connect() {
-		this.ws = new WebSocket('ws://localhost:4986/api/chess');
+		this.ws = new WebSocket(wsUrl);
 
 		this.ws.addEventListener('open', e => this.onOpen(e));
 		this.ws.addEventListener('error', e => this.onError(e));

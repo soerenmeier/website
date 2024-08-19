@@ -1,0 +1,6 @@
+/target
+/server/target
+/server/config.toml
+/ui/dist
+/ui/node_modules
+/wasm/js

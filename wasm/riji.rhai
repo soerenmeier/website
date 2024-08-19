@@ -21,12 +21,12 @@ fn install() {
 fn build() {
 	// let
 	let cargo = cmd([
-		"cargo", "build", "--release", "--target", "wasm32-unknown-unknown"
+		"cargo", "build", "--profile", "release-lto", "--target", "wasm32-unknown-unknown"
 	]);
 	cargo.execute();
 	fs::create_dir("./js");
 	fs::copy(
-		"../target/wasm32-unknown-unknown/release/wasm.wasm",
+		"../target/wasm32-unknown-unknown/release-lto/wasm.wasm",
 		"./js/wasm.wasm"
 	);
 
