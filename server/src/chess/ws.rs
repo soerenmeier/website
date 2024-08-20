@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use chuchi::{
 	error::ClientErrorKind,
 	ws,
@@ -6,6 +8,7 @@ use chuchi::{
 };
 use chuchi_postgres::UniqueId;
 use serde::{Deserialize, Serialize};
+use tokio::time::{interval, MissedTickBehavior};
 
 use crate::chess::chess::{Broadcast, Chess, MakeMoveResp};
 
@@ -34,6 +37,7 @@ enum Receive {
 		name: String,
 	},
 	WrongMove,
+	Ping,
 }
 
 /// The data which the client can send to the server
@@ -46,6 +50,7 @@ enum Send {
 		r#move: Move,
 	},
 	Init,
+	Pong,
 }
 
 #[ws("/api/chess")]
@@ -73,6 +78,9 @@ pub async fn ws_chess(
 	// the client is now up to date with the server
 	// we already subscribed to the board before sending the state
 	// so we are never gonna miss a move
+
+	let mut ping_interval = interval(Duration::from_secs(5));
+	ping_interval.set_missed_tick_behavior(MissedTickBehavior::Skip);
 
 	loop {
 		tokio::select! {
@@ -116,7 +124,8 @@ pub async fn ws_chess(
 						})
 						.await
 						.map_err(json_err_serv)?;
-					}
+					},
+					Send::Pong => {}
 				}
 			},
 			broadcast = chess.receive() => {
@@ -136,6 +145,9 @@ pub async fn ws_chess(
 						// now let's wait until the user is ready to play again
 					}
 				}
+			},
+			_ = ping_interval.tick() => {
+				ws.serialize(&Receive::Ping).await.map_err(json_err_serv)?;
 			}
 		}
 	}

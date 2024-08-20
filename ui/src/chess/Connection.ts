@@ -22,6 +22,9 @@ export type Receive =
 	  }
 	| {
 			kind: 'WrongMove';
+	  }
+	| {
+			kind: 'Ping';
 	  };
 
 export type Send = {
@@ -99,6 +102,9 @@ export default class Connection {
 				recv.history = new HistoryMove(recv.history);
 				this.board.set(recv.board);
 				this.history.set(this.history.get()!.cloneAdd(recv.history));
+				break;
+			case 'Ping':
+				this.ws.send(JSON.stringify({ kind: 'Pong' }));
 				break;
 		}
 
