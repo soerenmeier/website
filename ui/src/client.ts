@@ -3,7 +3,7 @@ import * as routes from './pages/routes';
 import { handleRoute } from './main';
 import { SsrCache } from 'chuchi/ssr';
 import { Router } from 'chuchi';
-import { hydrate, mount, tick } from 'svelte';
+import { hydrate, tick } from 'svelte';
 import { Writable } from 'chuchi/stores';
 
 async function main() {

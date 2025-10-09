@@ -33,6 +33,7 @@ export async function handleRoute(
 			page: {
 				component: comp.default,
 				props: pageProps,
+				hideFooter: comp.hideFooter ?? false,
 			},
 		};
 	}

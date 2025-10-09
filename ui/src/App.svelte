@@ -5,13 +5,15 @@
 	import Footer from './components/Footer.svelte';
 
 	const { page } = $props();
+
+	const Component = $derived($page.component);
 </script>
 
 <Background />
 
 <main>
 	<!-- {#key component} -->
-	<svelte:component this={$page.component} {...$page.props} />
+	<Component {...$page.props} />
 	<!-- {/key} -->
 </main>
 
