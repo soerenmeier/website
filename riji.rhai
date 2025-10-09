@@ -12,3 +12,8 @@ fn docker_push() {
 	]);
 	docker.execute();
 }
+
+fn publish() {
+	docker_build();
+	docker_push();
+}
