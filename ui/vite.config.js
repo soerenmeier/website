@@ -3,7 +3,6 @@ import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { sveltePreprocess } from 'svelte-preprocess';
 import { plugin as mdPlugin } from 'vite-plugin-markdown';
-// import { usedSsrComponents } from 'chuchi/ssr';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ isSsrBuild }) => {
@@ -33,48 +32,38 @@ export default defineConfig(({ isSsrBuild }) => {
 	};
 });
 
-// todo port this to chuchi/ssr
-// maybe we need to do a new release with svelte 5
+// Records every component rendered during ssr in the 'modules' context
+// (chuchi/ssr SsrComponents), so the server can add the css and js preloads
+// from the ssr manifest. chuchi's usedSsrComponents only knows the svelte 4
+// output, so this matches the svelte 5 server function instead
+// (`function Name($$renderer, $$props) {`, `$$payload` before svelte 5.39).
+const SSR_COMPONENT_FN =
+	/^(?:export default )?function [\w$]+\(\$\$(?:renderer|payload)\b[^)]*\)\s*\{/m;
+
 function usedSsrComponents(relativeFn) {
 	return {
+		name: 'used-ssr-components',
+		enforce: 'post',
 		transform(code, id, options) {
 			if (!options?.ssr || !id.endsWith('.svelte')) return;
 
-			// console.log('\n\n\n\nwhile building svelte', id, '\n', code);
-
-			const file = relativeFn(id);
-
-			const possibleSignatures = [
-				'($$payload, $$props) {',
-				'($$payload) {',
-			];
-
-			let idx = -1;
-			for (const sig of possibleSignatures) {
-				idx = code.indexOf(sig);
-				if (idx >= 0) {
-					idx += sig.length;
-					break;
-				}
+			const match = SSR_COMPONENT_FN.exec(code);
+			if (!match) {
+				// without tracking the page loses its css on first load,
+				// so fail loudly instead of shipping a broken build
+				this.error(`could not inject ssr modules tracking in ${id}`);
 			}
-			if (idx < 0) {
-				console.error('could not inject ssr modules tracking', id);
-				return;
-			}
+			const idx = match.index + match[0].length;
 
-			code = `
-import { getContext as __modulesGetContext } from 'svelte';
-${code.substr(0, idx)}
-(() => {
-const ctx = __modulesGetContext('modules');
-if (ctx && ctx instanceof Set) {
-	ctx.add('${file.replaceAll('\\', '\\\\')}');
+			const file = JSON.stringify(relativeFn(id));
+
+			return `import { getContext as __modulesGetContext } from 'svelte';
+${code.slice(0, idx)}
+{
+	const ctx = __modulesGetContext('modules');
+	if (ctx instanceof Set) ctx.add(${file});
 }
-})();
-${code.substr(idx)}
-`;
-
-			return code;
+${code.slice(idx)}`;
 		},
 	};
 }

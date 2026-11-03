@@ -4,7 +4,6 @@ import { register as registerBlogs } from '@/blog/routes';
 
 export function register(router: Router) {
 	router.register('/', () => import('./index.svelte'));
-	router.register('/billiard', () => import('./billiard/index.svelte'));
 
 	registerBlogs(router);
 }
