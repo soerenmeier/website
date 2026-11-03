@@ -44,7 +44,13 @@ async fn main() {
 	// let cfg: Config =
 	// 	toml::from_str(&cfg_string).expect("failed to read config.toml");
 
-	let mut server = chuchi::build("0.0.0.0:4986")
+	// genco gives the address in HOST and PORT, the container listens on 4986
+	let addr = format!(
+		"{}:{}",
+		std::env::var("HOST").unwrap_or_else(|_| "0.0.0.0".into()),
+		std::env::var("PORT").unwrap_or_else(|_| "4986".into())
+	);
+	let mut server = chuchi::build(addr)
 		.await
 		.expect("Address could not be parsed");
 

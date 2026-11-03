@@ -1,0 +1,10 @@
+# genco (gs3): what a release builds and keeps, see `genco docs`
+
+# like the Dockerfile, on a build runner in the same build image: the wasm
+# module, the ui (SSR bundle + public files) and the server; release/ is
+# what the container has in its working directory (./server and ./ui)
+[[build]]
+on = "runner"
+image = "docker.io/soerenmeier/chuchi-build"
+run = "cd wasm && riji build && cd ../ui && npm ci && npm run build && cd ../server && cargo build --release --locked && cd .. && rm -rf release && mkdir release && cp target/release/server release/ && cp -r ui/dist release/ui"
+artifacts = ["release"]
